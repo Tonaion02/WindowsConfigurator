@@ -18,6 +18,7 @@ class DIRECTORIES_NAME:
     # Change these names if you want to change directories' name
     _GARBAGE_DIR = "garbage"
     _DOWNLOADS_DIR = "downloadsTmp"
+    _TO_MANUALLY_INSTALL_DIR = "toManuallyInstall"
     _BASE_DIR = ""
     # Change these names if you want to change directories' name
 
@@ -40,6 +41,10 @@ class DIRECTORIES_NAME:
     def _get_downloads_dir():
         # return DIRECTORIES_NAME._BASE_DIR + DIRECTORIES_NAME._slash + DIRECTORIES_NAME._DOWNLOADS_DIR
         return os.path.join(DIRECTORIES_NAME._BASE_DIR, DIRECTORIES_NAME._DOWNLOADS_DIR)
+    
+    @staticmethod
+    def _get_to_manually_install_dir():
+        return os.path.join(DIRECTORIES_NAME._BASE_DIR, DIRECTORIES_NAME._TO_MANUALLY_INSTALL_DIR)
     # Don't touch this, PRIVATE
 
 
@@ -48,6 +53,7 @@ DIRECTORIES_NAME._init()
 GARBAGE_DIR = DIRECTORIES_NAME._get_garbage_dir()
 DOWNLOADS_DIR = DIRECTORIES_NAME._get_downloads_dir()
 BASE_DIR = DIRECTORIES_NAME._get_downloads_dir()
+TO_MANUALLY_INSTALL_DIR = DIRECTORIES_NAME._get_to_manually_install_dir()
 # Don't touch this, PRIVATE
 #===================================================================================================================
 
@@ -67,7 +73,10 @@ def install_software(url: str, outfile, installation_directory=None):
     if installation_directory == None:
         print("Da fare!!!")
     else:
-        subprocess.Popen(outfile + " /InstallDirectoryPath=[\"C:/test/firefox\"]", shell=True)
+        print(outfile + " /InstallDirectoryPath=\"C:/test/firefox\"")
+        # subprocess.Popen(outfile + "/S /InstallDirectoryPath=\"C:/test/firefox\"", shell=True)
+        res = os.system(outfile + " /InstallDirectoryPath=\"C:/test/firefox\"")
+        print(res)
 
 
 
@@ -79,6 +88,9 @@ def create_base_directories():
 
     # Create downloads directory for downloads with name DOWNLOADS_DIR
     os.mkdir(DOWNLOADS_DIR)
+
+    # Create manually install directories
+    os.mkdir(TO_MANUALLY_INSTALL_DIR)
 
 
 
