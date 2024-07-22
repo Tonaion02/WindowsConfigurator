@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<data>
+    <directory ref="utils">
+
+    <directory ref="source">
+        <directory ref="rust"> <!-- use CURRENT_DIRECTORY value if from not found, if from found and CURRENT_DIRECTORY != BASE_DIRECTORY crash and report-->
+        <directory ref="C++"> <!-- use ref if name is not found-->
+        <directory ref="Python">
+        <directory ref="C">
+    </directory>
+
+    <software portable="true" url="https://"></software> <!-- program that must be installed or only downloaded(portable)-->
+    <file url="https://"></file> <!-- something that must be only downloaded and moved in the correct directory -->
+
+</data>

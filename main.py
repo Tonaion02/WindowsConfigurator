@@ -11,8 +11,10 @@ import requests
 
 
 #===================================================================================================================
+# ------------------------------------------------------------------------------------------------------------------
 # DIRECTORIES_NAME class
 # Build all the paths
+# ------------------------------------------------------------------------------------------------------------------
 class DIRECTORIES_NAME:
 
     # Change these names if you want to change directories' name
@@ -32,6 +34,8 @@ class DIRECTORIES_NAME:
     def _init():
         if DIRECTORIES_NAME._debug:
             DIRECTORIES_NAME._BASE_DIR = DIRECTORIES_NAME._GARBAGE_DIR
+        else:
+            pass # SYSTEM_BASE_DIR
 
     @staticmethod
     def _get_garbage_dir():
