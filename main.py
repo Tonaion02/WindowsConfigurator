@@ -69,8 +69,17 @@ TO_MANUALLY_INSTALL_DIR = DIRECTORIES_NAME._get_to_manually_install_dir()
 
 #===================================================================================================================
 #-------------------------------------------------------------------------------------------------------------------
-# 
+# OUTPUT_FORMATTER Class
+# This class contains methods to print on the command line output for debug purpose
 #-------------------------------------------------------------------------------------------------------------------
+class OUTPUT_FORMATTER:
+
+    @staticmethod
+    def print_logo():
+        print("+===================================================================================================================+")
+        print("+                                          WINDOWS-CONFIGURATOR                                                     +")
+        print("+===================================================================================================================+")
+
 #===================================================================================================================
 
 
@@ -124,6 +133,16 @@ def testParseXml(name: str) -> None:
         def __init__(self, path: str):
             self.intern = path
 
+        def __str__(self):
+            return "BackupPath: " + str(self.intern)
+        
+    def print_element(e):
+        if type(e) is BackupPath:
+            print(str(e))
+            
+        elif type(e) is ET.Element:
+            print("Element: " + e.tag + " name: " + str(e.attrib) + " childs number: " + str(len(list(e))))
+
     # Variable that mantain the path of the current working directory like a string
     actualPath = BASE_DIR
 
@@ -140,7 +159,7 @@ def testParseXml(name: str) -> None:
         # DEBUG
         print("\n StackElements:")
         for element in stackElements:
-            print(element)
+            print_element(element)
         print("StackElements end")
         
         # Pop the last element
@@ -149,7 +168,7 @@ def testParseXml(name: str) -> None:
         # Check if the last element is a BackupPath or an Element of the tree (START)
         if type(poppedElement) is BackupPath:
             # DEBUG
-            print("BackupPath: " + poppedElement.intern)
+            print(poppedElement)
 
             # TODO change effectevly the current working directory
             actualPath = poppedElement.intern
@@ -166,13 +185,15 @@ def testParseXml(name: str) -> None:
             stackElements.append(child)
 
         # DEBUG
-        print("Element: " + poppedElement.tag + " name: " + str(poppedElement.attrib) + " childs number: " + str(len(list(poppedElement))))
+        print_element(poppedElement)
 
         
 
 
     
 if __name__ == "__main__":
+
+    OUTPUT_FORMATTER.print_logo()
 
     # # TEMP
     # # Testing changing enviroments' variables
