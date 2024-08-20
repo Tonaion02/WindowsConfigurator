@@ -14,14 +14,14 @@
     </directory>
 
     <directory name="languages">
+        <!-- To download, rename and put in the correct directory simply files -->
+        <file name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/> 
     </directory>
 
     <!-- portable=true no installation, portable=false requires installation so what you download is only installer then garbage -->
     <!-- 'type' can be portable/installable/manually_installable -->
     <software name="softwareName" type="portable"/>
     
-    <!-- To download simply files -->
-    <file name="fileName" url="https://"/> 
 
     <!-- A part can be easily solved with chocolatey -->
     <chocolatey-dependencies path=".config"/>

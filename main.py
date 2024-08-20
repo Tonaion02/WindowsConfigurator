@@ -108,6 +108,16 @@ def install_software(url: str, outfile, installation_directory=None):
         print(res)
 
 
+# Simply routine to download a file at url=url, renamed with name=name and 
+# saved in a the directory=dir
+def download_file(url: str, name: str, dir: str):
+    R = requests.get(url, allow_redirects=True)
+    if R.status_code != 200:
+        raise ConnectionError('could not download {}\nerror code: {}'.format(url, R.status_code))
+
+    path_to_file = os.path.join(dir, name)
+    path_to_file_PATH = Path(path_to_file)
+    path_to_file_PATH.write_bytes(R.content)
 
 
 
@@ -136,7 +146,7 @@ def setX(name: str, value: str) -> None:
 
 
 # TEMP
-def testParseXml(name: str) -> None:
+def parse_xml(name: str) -> None:
 
     class BackupPath:
         def __init__(self, path: str):
@@ -154,10 +164,12 @@ def testParseXml(name: str) -> None:
     
     class ATTRIB:
         NAME = "name"
+        URL = "url"
+        EXT = "extension"
 
 
     def print_element(e):
-        if isinstance(e, Path): 
+        if isinstance(e, BackupPath): 
             print(str(e))
             
         elif type(e) is ET.Element:
@@ -199,9 +211,9 @@ def testParseXml(name: str) -> None:
             # DEBUG
             print(popped_element)
 
-            # TODO change effectevly the current working directory only if the current working directory
+            # Change effectevly the current working directory only if the current working directory
             # is different from the directory where we must be
-            # TEMP(temporary solution that doesn't work properly)
+            # TODO verify that works properly
             if cwd_path != popped_element.intern:
                 cwd_path = popped_element.intern
                 os.chdir(cwd_path)
@@ -221,10 +233,13 @@ def testParseXml(name: str) -> None:
                     cwd_path = popped_element_dir_path
                     os.chdir(cwd_path)
 
-
-
             elif popped_element.tag == TAGS.FILE:
-                pass
+                url = popped_element.attrib[ATTRIB.URL]
+                name = popped_element.attrib[ATTRIB.NAME]
+                extension = popped_element.attrib[ATTRIB.EXT]
+                dir = cwd_path
+                name = name + "." + extension
+                download_file(url, name, dir)
             elif popped_element.tag == TAGS.SOFTWARE:
                 pass
             elif popped_element.tag == TAGS.DATA:
@@ -274,4 +289,4 @@ if __name__ == "__main__":
 
     # install_software("https://download.mozilla.org/?product=firefox-stub&os=win&lang=it", "firefox-installer.exe", "abla")
 
-    testParseXml("resources.xml")
+    parse_xml("resources.xml")
