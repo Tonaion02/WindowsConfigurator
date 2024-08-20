@@ -195,7 +195,7 @@ def create_base_directories():
 
 # Modify or create an enviroment variable PERMANENTLY
 # PERMANENTLY means that the changes are not local to this shell
-# It already adds " to value to support spaces in value
+# Note: It already adds " to value to support spaces in value
 def setX(name: str, value: str) -> None:
     os.system("SETX " + name + " \"" + value + "\"")
 
@@ -225,13 +225,14 @@ def parse_xml(name: str) -> None:
         NAME = "name"
         URL = "url"
         EXT = "extension"
-        PORT = "portable"
+        TYPE = "type"
 
         # This function take a the value of an attribute like a string and convert to a boolean
         # if it is possible.
         # Correct boolean value or a number(3) in case of error
         # WARNING: for the use of '|' operator that create some sort of Union, we must use
         # and support only Python 3.10
+        # Warning: PROBABLY I DON'T USE IT ANYMORE
         @staticmethod
         def retrieve_bool(attrib_value: str) -> int | bool:
             if len(attrib_value) != 4:
@@ -244,6 +245,24 @@ def parse_xml(name: str) -> None:
                 return False
 
             return 3
+        
+        # Methods(static) to verify that value of attribute named 'type' is valid or has a specific value (START)
+        @staticmethod
+        def is_valid_software_type(type_: str) -> bool:
+            return type_ in ['portable', 'installable', 'manually']
+        
+        @staticmethod
+        def is_portable(type_: str) -> bool:
+            return type_ == 'portable'
+        
+        @staticmethod
+        def is_installable(type_: str) -> bool:
+            return type_ == 'installable'
+        
+        @staticmethod
+        def is_manually_installable(type_: str) -> bool:
+            return type_ == 'manually'
+        # Methods(static) to verify that value of attribute named 'type' is valid or has a specific value (END)
 
     def print_element(e):
         if isinstance(e, BackupPath): 
@@ -328,14 +347,28 @@ def parse_xml(name: str) -> None:
                 url = popped_element.attrib[ATTRIB.URL]
                 name = popped_element.attrib[ATTRIB.NAME]
                 dir = cwd_path
-                portable = ATTRIB.retrieve_bool(popped_element.attrib[ATTRIB.PORT])
+                type_ = popped_element.attrib[ATTRIB.TYPE]
                 
-                if type(portable) is bool:
-                    install_software(url, name, dir, portable)
-                else:
-                    # Error
+
+
+                # DEBUG
+                # TODO improve (No exception is needed, we handle it here)
+                if not ATTRIB.is_valid_software_type(type_):
+                    print("Value: " + str(type_) + " is not a valid value for the type of software")
+
+                if ATTRIB.is_portable(type_):
+                    install_software(url, name, dir, True)
+
+                if ATTRIB.is_manually_installable(type_):
+                    # TODO
+                    # probably i can simple use download_file and move to the correct
+                    # directory (toManuallyInstall in Garbage)
                     pass
 
+                if ATTRIB.is_installable(type_):
+                    # TODO
+                    pass
+            
             elif popped_element.tag == TAGS.CHOCO:
                 pass
             elif popped_element.tag == TAGS.GROUP:
@@ -351,9 +384,7 @@ def parse_xml(name: str) -> None:
         for child in popped_element:
             stack_elements.append(child)
 
-
-
-        
+      
 
 
     
