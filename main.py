@@ -6,27 +6,30 @@ import shutil
 from pathlib import Path
 import requests
 
+import xml.etree.ElementTree as ET
+
 
 
 
 
 #===================================================================================================================
 # ------------------------------------------------------------------------------------------------------------------
-# DIRECTORIES_NAME class
-# Build all the paths
+# DIRECTORIES_NAME class TODO: change with an appropriate name
+# Builds and contains all the paths necessary for the program
+# TODO: necessary to understand what to do where i am not in debug mode with the BASE_DIR
+# what directory become the BASE_DIR?
 # ------------------------------------------------------------------------------------------------------------------
 class DIRECTORIES_NAME:
 
-    # Change these names if you want to change directories' name
+    # Change these names if you want to change directories' name (START)
     _GARBAGE_DIR = "garbage"
     _DOWNLOADS_DIR = "downloadsTmp"
     _TO_MANUALLY_INSTALL_DIR = "toManuallyInstall"
     _BASE_DIR = ""
-    # Change these names if you want to change directories' name
+    # Change these names if you want to change directories' name (END)
 
-    # Don't touch this, PRIVATE
+    # Don't touch this, PRIVATE (START)
     _debug = True
-    _slash = "/"
 
 
 
@@ -43,26 +46,32 @@ class DIRECTORIES_NAME:
     
     @staticmethod
     def _get_downloads_dir():
-        # return DIRECTORIES_NAME._BASE_DIR + DIRECTORIES_NAME._slash + DIRECTORIES_NAME._DOWNLOADS_DIR
         return os.path.join(DIRECTORIES_NAME._BASE_DIR, DIRECTORIES_NAME._DOWNLOADS_DIR)
     
     @staticmethod
     def _get_to_manually_install_dir():
         return os.path.join(DIRECTORIES_NAME._BASE_DIR, DIRECTORIES_NAME._TO_MANUALLY_INSTALL_DIR)
-    # Don't touch this, PRIVATE
+    # Don't touch this, PRIVATE (END)
 
 
-# Don't touch this, PRIVATE
+# Don't touch this, PRIVATE (START)
 DIRECTORIES_NAME._init()
 GARBAGE_DIR = DIRECTORIES_NAME._get_garbage_dir()
 DOWNLOADS_DIR = DIRECTORIES_NAME._get_downloads_dir()
 BASE_DIR = DIRECTORIES_NAME._get_downloads_dir()
 TO_MANUALLY_INSTALL_DIR = DIRECTORIES_NAME._get_to_manually_install_dir()
-# Don't touch this, PRIVATE
+# Don't touch this, PRIVATE (END)
 #===================================================================================================================
 
 
 
+
+
+#===================================================================================================================
+#-------------------------------------------------------------------------------------------------------------------
+# 
+#-------------------------------------------------------------------------------------------------------------------
+#===================================================================================================================
 
 
 def install_software(url: str, outfile, installation_directory=None):
@@ -77,9 +86,8 @@ def install_software(url: str, outfile, installation_directory=None):
     if installation_directory == None:
         print("Da fare!!!")
     else:
-        print(outfile + " /InstallDirectoryPath=\"C:/test/firefox\"")
         # subprocess.Popen(outfile + "/S /InstallDirectoryPath=\"C:/test/firefox\"", shell=True)
-        res = os.system(outfile + " /InstallDirectoryPath=\"C:/test/firefox\"")
+        res = os.system("choco.exe ")
         print(res)
 
 
@@ -100,9 +108,80 @@ def create_base_directories():
 
 
 
+# Modify or create an enviroment variable PERMANENTLY
+# PERMANENTLY means that the changes are not local to this shell
+# It already adds " to value to support spaces in value
+def setX(name: str, value: str) -> None:
+    os.system("SETX " + name + " \"" + value + "\"")
+
+
+
+
+# TEMP
+def testParseXml(name: str) -> None:
+
+    class BackupPath:
+        def __init__(self, path: str):
+            self.intern = path
+
+    # Variable that mantain the path of the current working directory like a string
+    actualPath = BASE_DIR
+
+    # Starting to parse file and retrieve root element
+    tree = ET.parse(name)
+    root = tree.getroot()
+
+    # Use list like a stack with append and pop
+    stackElements = []
+    stackElements.append(root)
+
+    while len(stackElements) > 0:
+
+        # DEBUG
+        print("\n StackElements:")
+        for element in stackElements:
+            print(element)
+        print("StackElements end")
+        
+        # Pop the last element
+        poppedElement = stackElements.pop(len(stackElements) - 1)
+
+        # Check if the last element is a BackupPath or an Element of the tree (START)
+        if type(poppedElement) is BackupPath:
+            # DEBUG
+            print("BackupPath: " + poppedElement.intern)
+
+            # TODO change effectevly the current working directory
+            actualPath = poppedElement.intern
+            continue
+        elif type(poppedElement) is ET.Element:
+            pass
+        # Check if the last element is a BackupPath or an Element of the tree (END)
+
+        if len(list(poppedElement)) > 0:
+            stackElements.append(BackupPath(actualPath))
+
+        # Retrieve all the child elements of the poppedElement and put in the stack
+        for child in poppedElement:
+            stackElements.append(child)
+
+        # DEBUG
+        print("Element: " + poppedElement.tag + " name: " + str(poppedElement.attrib) + " childs number: " + str(len(list(poppedElement))))
+
+        
+
+
+    
 if __name__ == "__main__":
 
-    # TEMPORARY
+    # # TEMP
+    # # Testing changing enviroments' variables
+    # os.system("SETX TEST_VARIABLE ciao")
+    # t = os.getenv("PATH")
+    # print("$TEST_VARIABLE: " + str(t))
+    # os.system("SETX TEST_VARIABLE " + "\"" + t + "ciao" + "\"")
+
+    # TEMP
     os.chdir("C:/source/Python/windows-configurator")
 
     # Cleaning
@@ -110,4 +189,6 @@ if __name__ == "__main__":
 
     create_base_directories()
 
-    install_software("https://download.mozilla.org/?product=firefox-stub&os=win&lang=it", "firefox-installer.exe", "abla")
+    # install_software("https://download.mozilla.org/?product=firefox-stub&os=win&lang=it", "firefox-installer.exe", "abla")
+
+    testParseXml("resources.xml")

@@ -1,15 +1,28 @@
 <?xml version="1.0"?>
+<!-- The elements in OS is putted in the parent xml directory or in the directory we chose with from parameter -->
 <data>
-    <directory ref="utils">
+    <directory name="utils"/>
+    <directory name="apps"/>
 
-    <directory ref="source">
-        <directory ref="rust"> <!-- use CURRENT_DIRECTORY value if from not found, if from found and CURRENT_DIRECTORY != BASE_DIRECTORY crash and report-->
-        <directory ref="C++"> <!-- use ref if name is not found-->
-        <directory ref="Python">
-        <directory ref="C">
+    <!-- use ref to refer to this directory from other parts of resources.xml, use name as ref if ref isn't found -->
+    <!-- name is the name of the directory in the OS -->
+    <directory name="source" ref="source">
+        <directory name="rust"/>
+        <directory name="C++"/> 
+        <directory name="python"/>
+        <directory name="C"/>
     </directory>
 
-    <software portable="true" url="https://"></software> <!-- program that must be installed or only downloaded(portable)-->
-    <file url="https://"></file> <!-- something that must be only downloaded and moved in the correct directory -->
+    <directory name="languages">
+    </directory>
 
+    <!-- portable=true no installation, portable=false requires installation so what you download is only installer then garbage -->
+    <!-- 'type' can be portable/installable/manually_installable -->
+    <software name="softwareName" type="portable"/>
+    
+    <!-- To download simply files -->
+    <file name="fileName" url="https://"/> 
+
+    <!-- A part can be easily solved with chocolatey -->
+    <chocolatey-dependencies path=".config"/>
 </data>
