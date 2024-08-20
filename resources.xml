@@ -15,12 +15,13 @@
 
     <directory name="languages">
         <!-- To download, rename and put in the correct directory simply files -->
-        <file name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/> 
+        <file name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/>
+        <software name="premake5" portable="true" url="https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip"/>
     </directory>
 
     <!-- portable=true no installation, portable=false requires installation so what you download is only installer then garbage -->
     <!-- 'type' can be portable/installable/manually_installable -->
-    <software name="softwareName" type="portable"/>
+    <!-- <software name="softwareName" type="portable"/> -->
     
 
     <!-- A part can be easily solved with chocolatey -->

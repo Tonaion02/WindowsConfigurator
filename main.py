@@ -8,6 +8,8 @@ import requests
 
 import xml.etree.ElementTree as ET
 
+import zipfile
+
 
 
 
@@ -91,7 +93,7 @@ class OUTPUT_FORMATTER:
 
 
 
-def install_software(url: str, outfile, installation_directory=None):
+def install_software_test(url: str, outfile, installation_directory=None):
     R = requests.get(url, allow_redirects=True)
     if R.status_code != 200:
         raise ConnectionError('could not download {}\nerror code: {}'.format(url, R.status_code))
@@ -108,8 +110,12 @@ def install_software(url: str, outfile, installation_directory=None):
         print(res)
 
 
+
+
+
 # Simply routine to download a file at url=url, renamed with name=name and 
 # saved in a the directory=dir
+# TODO check if the file already exist, in the case launch exception
 def download_file(url: str, name: str, dir: str):
     R = requests.get(url, allow_redirects=True)
     if R.status_code != 200:
@@ -119,7 +125,59 @@ def download_file(url: str, name: str, dir: str):
     path_to_file_PATH = Path(path_to_file)
     path_to_file_PATH.write_bytes(R.content)
 
+# Routine to download and install(if it is needed) a software
+# In the case of a portable file, it automatically understand if it 
+# is needed to unzip/unrar the file
+def install_software(url: str, name: str, dir: str, portable: bool):
 
+    response = requests.get(url, allow_redirects=True)
+    if response.status_code != 200:
+        raise ConnectionError('could not download {}\nerror code: {}'.format(url, R.status_code))
+
+    path_to_file = os.path.join(dir, name)
+
+    if portable:    
+        # Content-Disposition is an header of a response
+        # The Content-Disposition contains the name of the downloaded file
+        # We use the name of the downloaed file to check if it is a zip or a Rar etc
+        content_disposition = response.headers.get('Content-Disposition')
+        
+        # DEBUG
+        if content_disposition == None:
+            print("There isn't Content-Disposition in response's headers")
+        contents = content_disposition.split()
+
+        # Retrieve filename from the Content-Disposition
+        file_name = None
+        for content in contents:
+            found = content.find('filename')
+
+            if found >= 0:
+                index = content.find("=")
+                file_name = content[index + 1:]
+                break
+
+        # DEBUG
+        # TODO improve this error and launch an Exception
+        if file_name == None:
+            print("Error file_name is None")
+
+        temp_path_to_archive = os.path.join(DOWNLOADS_DIR, file_name)
+        temp_path_to_archive = Path(temp_path_to_archive)
+        temp_path_to_archive.write_bytes(response.content)
+
+        # For now consider only the .zip file extension
+        # TODO
+        found = file_name.find(".zip")
+        if found != -1:
+            with zipfile.ZipFile(temp_path_to_archive, 'r') as zip_ref:
+                zip_ref.extractall(path_to_file)
+        else:
+            print("Error not .zip")
+
+    elif not portable:
+        # TODO
+        pass
 
 def create_base_directories():
     # Create garbage directory for garbage with name GARBAGE_DIR
@@ -159,14 +217,33 @@ def parse_xml(name: str) -> None:
         DIRECTORY = "directory"
         FILE = "file"
         SOFTWARE = "software"
-        DATA = "data"
         CHOCO = "chocolatey-dependencies"
+        GROUP = "group"
+        DATA = "data"
     
     class ATTRIB:
         NAME = "name"
         URL = "url"
         EXT = "extension"
+        PORT = "portable"
 
+        # This function take a the value of an attribute like a string and convert to a boolean
+        # if it is possible.
+        # Correct boolean value or a number(3) in case of error
+        # WARNING: for the use of '|' operator that create some sort of Union, we must use
+        # and support only Python 3.10
+        @staticmethod
+        def retrieve_bool(attrib_value: str) -> int | bool:
+            if len(attrib_value) != 4:
+                return 3
+
+            attrib_value = attrib_value[0].upper() + attrib_value[1:].lower()
+            if attrib_value == 'True':
+                return True
+            elif attrib_value == 'False':
+                return False
+
+            return 3
 
     def print_element(e):
         if isinstance(e, BackupPath): 
@@ -206,6 +283,10 @@ def parse_xml(name: str) -> None:
         # Pop the last element
         popped_element = stack_elements.pop(len(stack_elements) - 1)
 
+        # DEBUG
+        print("Popped element:")
+        print_element(popped_element)
+
         # Check if the last element is a BackupPath or an Element of the tree (START)
         if isinstance(popped_element, BackupPath):
             # DEBUG
@@ -234,33 +315,43 @@ def parse_xml(name: str) -> None:
                     os.chdir(cwd_path)
 
             elif popped_element.tag == TAGS.FILE:
+                # Download file, rename it(with correct extension) and put it in the right folder (START)
                 url = popped_element.attrib[ATTRIB.URL]
                 name = popped_element.attrib[ATTRIB.NAME]
                 extension = popped_element.attrib[ATTRIB.EXT]
                 dir = cwd_path
                 name = name + "." + extension
                 download_file(url, name, dir)
+                # Download file, rename it(with correct extension) and put it in the right folder (END)
+
             elif popped_element.tag == TAGS.SOFTWARE:
+                url = popped_element.attrib[ATTRIB.URL]
+                name = popped_element.attrib[ATTRIB.NAME]
+                dir = cwd_path
+                portable = ATTRIB.retrieve_bool(popped_element.attrib[ATTRIB.PORT])
+                
+                if type(portable) is bool:
+                    install_software(url, name, dir, portable)
+                else:
+                    # Error
+                    pass
+
+            elif popped_element.tag == TAGS.CHOCO:
+                pass
+            elif popped_element.tag == TAGS.GROUP:
                 pass
             elif popped_element.tag == TAGS.DATA:
-                pass
-            elif popped_element.tag == TAGS.CHOCO:
                 pass
             else :
                 # DEBUG
                 print("WARNING! tag that i doesn't know")
         # Check if the last element is a BackupPath or an Element of the tree (END)
 
-
-        
-
-
         # Retrieve all the child elements of the popped_element and put in the stack
         for child in popped_element:
             stack_elements.append(child)
 
-        # DEBUG
-        print_element(popped_element)
+
 
         
 
@@ -290,3 +381,5 @@ if __name__ == "__main__":
     # install_software("https://download.mozilla.org/?product=firefox-stub&os=win&lang=it", "firefox-installer.exe", "abla")
 
     parse_xml("resources.xml")
+
+    # After all clean all the garbage(NOT IN DEBUG MODE) TODO
