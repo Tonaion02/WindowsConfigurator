@@ -16,14 +16,15 @@
     <directory name="languages">
         <!-- To download, rename and put in the correct directory simply files -->
         <file name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/>
+        <!-- portable=true no installation, portable=false requires installation so what you download is only installer then garbage -->
+        <!-- 'type' can be portable/installable/manually(that means manually_installable) -->
         <software name="premake5" type="portable" add_to_enviroment_path_variable="true" url="https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip"/>
+        <software name="firefox-installer.exe" type="manually" url="https://download.mozilla.org/?product=firefox-stub&amp;os=win&amp;lang=it"/>
     </directory>
 
-    <!-- portable=true no installation, portable=false requires installation so what you download is only installer then garbage -->
-    <!-- 'type' can be portable/installable/manually_installable -->
-    <!-- <software name="softwareName" type="portable"/> -->
+
     
 
-    <!-- A part can be easily solved with chocolatey -->
-    <chocolatey-dependencies path=".config"/>
+    <!-- A great part can be "easily" solved with chocolatey -->
+    <chocolatey-dependencies path="packages.config"/>
 </data>
