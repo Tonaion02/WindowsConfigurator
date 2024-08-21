@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 
 import zipfile
 
-import console_interface
+from console_interface import CONSOLE_INTERFACE
 
 from directories_handler import DIRECTORIES_HANDLER
 
@@ -39,10 +39,6 @@ def install_software_test(url: str, outfile, installation_directory=None):
         # subprocess.Popen(outfile + "/S /InstallDirectoryPath=\"C:/test/firefox\"", shell=True)
         res = os.system("choco.exe ")
         print(res)
-
-
-
-
 
 # This methods retrive file_name from an the headers of an HTTP response
 def retrieve_file_name_from_response(response) -> str | None:
@@ -369,7 +365,7 @@ def parse_xml(name: str) -> None:
     
 if __name__ == "__main__":
 
-    console_interface.CONSOLE_INTERFACE.print_logo()
+    CONSOLE_INTERFACE.print_logo()
 
     # # TEMP
     # # Testing changing enviroments' variables

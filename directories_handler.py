@@ -54,6 +54,8 @@ class DIRECTORIES_HANDLER:
 
 
 
+
+
     @staticmethod
     def init(path: str):
         if DIRECTORIES_HANDLER._debug:
@@ -78,5 +80,4 @@ class DIRECTORIES_HANDLER:
 
         # Create manually install directories
         os.mkdir(DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR)
-
 #===================================================================================================================
