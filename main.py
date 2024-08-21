@@ -11,8 +11,8 @@ import xml.etree.ElementTree as ET
 import zipfile
 
 from console_interface import CONSOLE_INTERFACE
-
 from directories_handler import DIRECTORIES_HANDLER
+from enviroment_variable_handler import ENV_VAR_HANDLER
 
 
 
@@ -142,40 +142,13 @@ def install_software(url: str, name: str, dir: str, portable: bool, update_env_p
         # Update the PATH enviroment variable with the new path to this portable file
         # if it is needed
         if update_env_path_var:
-            update_enviroment_variable("PATH", path_to_file + ";") 
+            ENV_VAR_HANDLER.update_enviroment_variable("PATH", path_to_file + ";") 
         
 
     elif not portable:
         # TODO
         pass
 
-
-
-
-
-# Modify or create an enviroment variable PERMANENTLY
-# PERMANENTLY means that the changes are not local to this shell
-# Note: It already adds " to value to support spaces in value
-# TODO try to create a Class to cache the real save to a variable
-def setX(name: str, value: str) -> None:
-    os.system("SETX " + name + " \"" + value + "\"")
-
-# Update the current value of an enviroment variable
-def update_enviroment_variable(name: str, value: str) -> None:
-    # DEBUG
-    # TODO 
-    name = "TEMP_PATH"
-    
-    prev_value = os.getenv(name)
-    if prev_value == None:
-        prev_value = ""
-
-    prev_value_ = os.environ.get(name)
-    if prev_value_ == None:
-        prev_value_ = ""
-
-    os.system("SETX " + name + " \"" + prev_value + value + "\"")
-    os.environ[name] = " \"" + prev_value_ + value + "\""
 
 
 
@@ -391,4 +364,4 @@ if __name__ == "__main__":
     # After all clean all the garbage(NOT IN DEBUG MODE) TODO
 
     # TEMP
-    update_enviroment_variable("PATH", "hello" + ";")
+    ENV_VAR_HANDLER.update_enviroment_variable("PATH", "hello" + ";")
