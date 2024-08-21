@@ -135,7 +135,7 @@ def install_software(url: str, name: str, dir: str, portable: bool, update_env_p
 
     response = requests.get(url, allow_redirects=True)
     if response.status_code != 200:
-        raise ConnectionError('could not download {}\nerror code: {}'.format(url, R.status_code))
+        raise ConnectionError('could not download {}\nerror code: {}'.format(url, response.status_code))
 
     path_to_file = os.path.join(dir, name)
 
