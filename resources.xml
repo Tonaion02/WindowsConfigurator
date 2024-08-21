@@ -3,6 +3,7 @@
 <data>
     <directory name="utils"/>
     <directory name="apps"/>
+    <directory name="tools"/>
 
     <!-- use ref to refer to this directory from other parts of resources.xml, use name as ref if ref isn't found -->
     <!-- name is the name of the directory in the OS -->
