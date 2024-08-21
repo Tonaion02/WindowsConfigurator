@@ -16,7 +16,7 @@
     <directory name="languages">
         <!-- To download, rename and put in the correct directory simply files -->
         <file name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/>
-        <software name="premake5" type="portable" url="https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip"/>
+        <software name="premake5" type="portable" add_to_enviroment_path_variable="true" url="https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip"/>
     </directory>
 
     <!-- portable=true no installation, portable=false requires installation so what you download is only installer then garbage -->

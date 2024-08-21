@@ -127,8 +127,11 @@ def download_file(url: str, name: str, dir: str):
 
 # Routine to download and install(if it is needed) a software
 # In the case of a portable file, it automatically understand if it 
-# is needed to unzip/unrar the file
-def install_software(url: str, name: str, dir: str, portable: bool):
+# is needed to unzip/unrar the file. We can specify if it is portable
+# with portable paramter.
+# With update_env_path_var parameter we specify if we must add the path
+# to the file or .exe to the enviroment variable
+def install_software(url: str, name: str, dir: str, portable: bool, update_env_path_var: bool):
 
     response = requests.get(url, allow_redirects=True)
     if response.status_code != 200:
@@ -175,6 +178,12 @@ def install_software(url: str, name: str, dir: str, portable: bool):
         else:
             print("Error not .zip")
 
+        # Update the PATH enviroment variable with the new path to this portable file
+        # if it is needed
+        if update_env_path_var:
+            update_enviroment_variable("PATH", path_to_file + ";") 
+        
+
     elif not portable:
         # TODO
         pass
@@ -196,9 +205,26 @@ def create_base_directories():
 # Modify or create an enviroment variable PERMANENTLY
 # PERMANENTLY means that the changes are not local to this shell
 # Note: It already adds " to value to support spaces in value
+# TODO try to create a Class to cache the real save to a variable
 def setX(name: str, value: str) -> None:
     os.system("SETX " + name + " \"" + value + "\"")
 
+# Update the current value of an enviroment variable
+def update_enviroment_variable(name: str, value: str) -> None:
+    # DEBUG
+    # TODO 
+    name = "TEMP_PATH"
+    
+    prev_value = os.getenv(name)
+    if prev_value == None:
+        prev_value = ""
+
+    prev_value_ = os.environ.get(name)
+    if prev_value_ == None:
+        prev_value_ = ""
+
+    os.system("SETX " + name + " \"" + prev_value + value + "\"")
+    os.environ[name] = " \"" + prev_value_ + value + "\""
 
 
 
@@ -226,13 +252,13 @@ def parse_xml(name: str) -> None:
         URL = "url"
         EXT = "extension"
         TYPE = "type"
+        ENV = "add_to_enviroment_path_variable"
 
         # This function take a the value of an attribute like a string and convert to a boolean
         # if it is possible.
         # Correct boolean value or a number(3) in case of error
         # WARNING: for the use of '|' operator that create some sort of Union, we must use
         # and support only Python 3.10
-        # Warning: PROBABLY I DON'T USE IT ANYMORE
         @staticmethod
         def retrieve_bool(attrib_value: str) -> int | bool:
             if len(attrib_value) != 4:
@@ -348,7 +374,7 @@ def parse_xml(name: str) -> None:
                 name = popped_element.attrib[ATTRIB.NAME]
                 dir = cwd_path
                 type_ = popped_element.attrib[ATTRIB.TYPE]
-                
+                env_var = ATTRIB.retrieve_bool(popped_element.attrib[ATTRIB.ENV])
 
 
                 # DEBUG
@@ -357,7 +383,7 @@ def parse_xml(name: str) -> None:
                     print("Value: " + str(type_) + " is not a valid value for the type of software")
 
                 if ATTRIB.is_portable(type_):
-                    install_software(url, name, dir, True)
+                    install_software(url, name, dir, True, env_var)
 
                 if ATTRIB.is_manually_installable(type_):
                     # TODO
@@ -414,3 +440,6 @@ if __name__ == "__main__":
     parse_xml("resources.xml")
 
     # After all clean all the garbage(NOT IN DEBUG MODE) TODO
+
+    # TEMP
+    update_enviroment_variable("PATH", "hello" + ";")
