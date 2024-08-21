@@ -12,64 +12,13 @@ import zipfile
 
 import console_interface
 
+from directories_handler import DIRECTORIES_HANDLER
 
 
 
-#===================================================================================================================
-# ------------------------------------------------------------------------------------------------------------------
-# DIRECTORIES_NAME class TODO: change with an appropriate name
-# Builds and contains all the paths necessary for the program
-# TODO: necessary to understand what to do where i am not in debug mode with the BASE_DIR
-# what directory become the BASE_DIR?
-# TODO: necessary rebase all the paths from a full path
-# ------------------------------------------------------------------------------------------------------------------
-class DIRECTORIES_NAME:
-
-    # Change these names if you want to change directories' name (START)
-    _GARBAGE_DIR = "garbage"
-    _DOWNLOADS_DIR = "downloadsTmp"
-    _TO_MANUALLY_INSTALL_DIR = "toManuallyInstall"
-    _BASE_DIR = ""
-    # Change these names if you want to change directories' name (END)
-
-    # Don't touch this, PRIVATE (START)
-    _debug = True
 
 
-
-    @staticmethod
-    def _init(path: str):
-        if DIRECTORIES_NAME._debug:
-            DIRECTORIES_NAME._BASE_DIR = os.path.join(path, DIRECTORIES_NAME._GARBAGE_DIR)
-        else:
-            pass # SYSTEM_BASE_DIR
-
-    @staticmethod
-    def _get_garbage_dir():
-        return DIRECTORIES_NAME._GARBAGE_DIR
-    
-    @staticmethod
-    def _get_base_dir():
-        return DIRECTORIES_NAME._BASE_DIR
-
-    @staticmethod
-    def _get_downloads_dir():
-        return os.path.join(DIRECTORIES_NAME._BASE_DIR, DIRECTORIES_NAME._DOWNLOADS_DIR)
-    
-    @staticmethod
-    def _get_to_manually_install_dir():
-        return os.path.join(DIRECTORIES_NAME._BASE_DIR, DIRECTORIES_NAME._TO_MANUALLY_INSTALL_DIR)
-    # Don't touch this, PRIVATE (END)
-
-
-# Don't touch this, PRIVATE (START)
-DIRECTORIES_NAME._init("C:/source/Python/windows-configurator")
-GARBAGE_DIR = DIRECTORIES_NAME._get_garbage_dir()
-DOWNLOADS_DIR = DIRECTORIES_NAME._get_downloads_dir()
-BASE_DIR = DIRECTORIES_NAME._get_base_dir()
-TO_MANUALLY_INSTALL_DIR = DIRECTORIES_NAME._get_to_manually_install_dir()
-# Don't touch this, PRIVATE (END)
-#===================================================================================================================
+DIRECTORIES_HANDLER.init("C:/source/Python/windows-configurator")
 
 
 
@@ -80,7 +29,7 @@ def install_software_test(url: str, outfile, installation_directory=None):
     if R.status_code != 200:
         raise ConnectionError('could not download {}\nerror code: {}'.format(url, R.status_code))
     
-    outfile = os.path.join(DOWNLOADS_DIR, outfile)
+    outfile = os.path.join(DIRECTORIES_HANDLER.DOWNLOADS_DIR, outfile)
     pathOutFile = Path(outfile)
     pathOutFile.write_bytes(R.content)
 
@@ -180,7 +129,7 @@ def install_software(url: str, name: str, dir: str, portable: bool, update_env_p
         if file_name == None:
             print("Error file_name is None")
 
-        temp_path_to_archive = os.path.join(DOWNLOADS_DIR, file_name)
+        temp_path_to_archive = os.path.join(DIRECTORIES_HANDLER.DOWNLOADS_DIR, file_name)
         temp_path_to_archive = Path(temp_path_to_archive)
         temp_path_to_archive.write_bytes(response.content)
 
@@ -204,14 +153,14 @@ def install_software(url: str, name: str, dir: str, portable: bool, update_env_p
         pass
 
 def create_base_directories():
-    # Create garbage directory for garbage with name GARBAGE_DIR
-    os.mkdir(GARBAGE_DIR)
+    # Create garbage directory for garbage with name DIRECTORIES_HANDLER.GARBAGE_DIR
+    os.mkdir(DIRECTORIES_HANDLER.GARBAGE_DIR)
 
-    # Create downloads directory for downloads with name DOWNLOADS_DIR
-    os.mkdir(DOWNLOADS_DIR)
+    # Create downloads directory for downloads with name DIRECTORIES_HANDLER.DOWNLOADS_DIR
+    os.mkdir(DIRECTORIES_HANDLER.DOWNLOADS_DIR)
 
     # Create manually install directories
-    os.mkdir(TO_MANUALLY_INSTALL_DIR)
+    os.mkdir(DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR)
 
 
 
@@ -315,7 +264,7 @@ def parse_xml(name: str) -> None:
 
 
     # Variable that mantain the path of the current working directory like a string
-    cwd_path = BASE_DIR
+    cwd_path = DIRECTORIES_HANDLER.BASE_DIR  
 
     # Starting to parse file and retrieve root element
     tree = ET.parse(name)
@@ -402,7 +351,7 @@ def parse_xml(name: str) -> None:
                     install_software(url, name, dir, True, env_var)
 
                 if ATTRIB.is_manually_installable(type_):
-                    download_file(url, name, TO_MANUALLY_INSTALL_DIR)
+                    download_file(url, name, DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR)
 
                 if ATTRIB.is_installable(type_):
                     # TODO
