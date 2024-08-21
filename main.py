@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 
 import zipfile
 
+import console_interface
 
 
 
@@ -68,25 +69,6 @@ DOWNLOADS_DIR = DIRECTORIES_NAME._get_downloads_dir()
 BASE_DIR = DIRECTORIES_NAME._get_base_dir()
 TO_MANUALLY_INSTALL_DIR = DIRECTORIES_NAME._get_to_manually_install_dir()
 # Don't touch this, PRIVATE (END)
-#===================================================================================================================
-
-
-
-
-
-#===================================================================================================================
-#-------------------------------------------------------------------------------------------------------------------
-# OUTPUT_FORMATTER Class
-# This class contains methods to print on the command line output for debug purpose
-#-------------------------------------------------------------------------------------------------------------------
-class OUTPUT_FORMATTER:
-
-    @staticmethod
-    def print_logo():
-        print("+===================================================================================================================+")
-        print("|                                          WINDOWS-CONFIGURATOR                                                     |")
-        print("+===================================================================================================================+")
-
 #===================================================================================================================
 
 
@@ -447,7 +429,7 @@ def parse_xml(name: str) -> None:
     
 if __name__ == "__main__":
 
-    OUTPUT_FORMATTER.print_logo()
+    console_interface.CONSOLE_INTERFACE.print_logo()
 
     # # TEMP
     # # Testing changing enviroments' variables
