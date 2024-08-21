@@ -36,22 +36,6 @@ class DIRECTORIES_HANDLER:
 
 
     @staticmethod
-    def init(path: str):
-        if DIRECTORIES_HANDLER._debug:
-            DIRECTORIES_HANDLER._BASE_DIR = os.path.join(path, DIRECTORIES_HANDLER._GARBAGE_DIR)
-
-            # Don't touch this, PRIVATE (START)
-            DIRECTORIES_HANDLER.GARBAGE_DIR = DIRECTORIES_HANDLER._get_garbage_dir()
-            DIRECTORIES_HANDLER.DOWNLOADS_DIR = DIRECTORIES_HANDLER._get_downloads_dir()
-            DIRECTORIES_HANDLER.BASE_DIR = DIRECTORIES_HANDLER._get_base_dir()
-            DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR = DIRECTORIES_HANDLER._get_to_manually_install_dir()
-            # Don't touch this, PRIVATE (END)
-        else:
-            pass # SYSTEM_BASE_DIR
-
-
-
-    @staticmethod
     def _get_garbage_dir():
         return DIRECTORIES_HANDLER._GARBAGE_DIR
     
@@ -67,4 +51,32 @@ class DIRECTORIES_HANDLER:
     def _get_to_manually_install_dir():
         return os.path.join(DIRECTORIES_HANDLER._BASE_DIR, DIRECTORIES_HANDLER._TO_MANUALLY_INSTALL_DIR)
     # Don't touch this, PRIVATE (END)
+
+
+
+    @staticmethod
+    def init(path: str):
+        if DIRECTORIES_HANDLER._debug:
+            DIRECTORIES_HANDLER._BASE_DIR = os.path.join(path, DIRECTORIES_HANDLER._GARBAGE_DIR)
+
+            DIRECTORIES_HANDLER.GARBAGE_DIR = DIRECTORIES_HANDLER._get_garbage_dir()
+            DIRECTORIES_HANDLER.DOWNLOADS_DIR = DIRECTORIES_HANDLER._get_downloads_dir()
+            DIRECTORIES_HANDLER.BASE_DIR = DIRECTORIES_HANDLER._get_base_dir()
+            DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR = DIRECTORIES_HANDLER._get_to_manually_install_dir()
+        else:
+            pass # SYSTEM_BASE_DIR
+
+
+
+    @staticmethod
+    def create_base_directories():
+        # Create garbage directory for garbage with name DIRECTORIES_HANDLER.GARBAGE_DIR
+        os.mkdir(DIRECTORIES_HANDLER.GARBAGE_DIR)
+
+        # Create downloads directory for downloads with name DIRECTORIES_HANDLER.DOWNLOADS_DIR
+        os.mkdir(DIRECTORIES_HANDLER.DOWNLOADS_DIR)
+
+        # Create manually install directories
+        os.mkdir(DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR)
+
 #===================================================================================================================

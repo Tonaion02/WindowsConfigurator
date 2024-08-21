@@ -43,6 +43,7 @@ def install_software_test(url: str, outfile, installation_directory=None):
 
 
 
+
 # This methods retrive file_name from an the headers of an HTTP response
 def retrieve_file_name_from_response(response) -> str | None:
     # Content-Disposition is an header of a response
@@ -151,16 +152,6 @@ def install_software(url: str, name: str, dir: str, portable: bool, update_env_p
     elif not portable:
         # TODO
         pass
-
-def create_base_directories():
-    # Create garbage directory for garbage with name DIRECTORIES_HANDLER.GARBAGE_DIR
-    os.mkdir(DIRECTORIES_HANDLER.GARBAGE_DIR)
-
-    # Create downloads directory for downloads with name DIRECTORIES_HANDLER.DOWNLOADS_DIR
-    os.mkdir(DIRECTORIES_HANDLER.DOWNLOADS_DIR)
-
-    # Create manually install directories
-    os.mkdir(DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR)
 
 
 
@@ -395,7 +386,7 @@ if __name__ == "__main__":
     # Cleaning
     shutil.rmtree("garbage", ignore_errors=True)
 
-    create_base_directories()
+    DIRECTORIES_HANDLER.create_base_directories()
 
     # install_software("https://download.mozilla.org/?product=firefox-stub&os=win&lang=it", "firefox-installer.exe", "abla")
 
