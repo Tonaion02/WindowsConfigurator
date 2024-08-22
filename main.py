@@ -37,8 +37,6 @@ def parse_xml(name: str) -> None:
     class TAGS:
         DIRECTORY = "directory"
         RES = "resource"
-        # FILE = "file"
-        # SOFTWARE = "software"
         CHOCO = "chocolatey-dependencies"
         GROUP = "group"
         DATA = "data"
@@ -92,10 +90,12 @@ def parse_xml(name: str) -> None:
     @staticmethod
     def print_element(e):
         if isinstance(e, BackupPath): 
-            print(str(e))
+            # print(str(e))
+            CONSOLE_INTERFACE.print_line(str(e))
             
         elif type(e) is ET.Element:
-            print("Element: " + e.tag + " name: " + str(e.attrib) + " childs number: " + str(len(list(e))))
+            # print("Element: " + e.tag + " name: " + str(e.attrib) + " childs number: " + str(len(list(e))))
+            CONSOLE_INTERFACE.print_line("Element: " + e.tag + " name: " + str(e.attrib) + " childs number: " + str(len(list(e))))
 
 
 
@@ -120,22 +120,26 @@ def parse_xml(name: str) -> None:
     while len(stack_elements) > 0:
 
         # DEBUG
-        print("\n StackElements:")
+        # print("\n StackElements:")
+        CONSOLE_INTERFACE.print_line("\n StackElements:")
         for element in stack_elements:
             print_element(element)
-        print("StackElements end")
+        # print("StackElements end")
+        CONSOLE_INTERFACE.print_line("StackElements end")
         
         # Pop the last element
         popped_element = stack_elements.pop(len(stack_elements) - 1)
 
         # DEBUG
-        print("Popped element:")
+        # print("Popped element:")
+        CONSOLE_INTERFACE.print_line("Popped element:")
         print_element(popped_element)
 
         # Check if the last element is a BackupPath or an Element of the tree (START)
         if isinstance(popped_element, BackupPath):
             # DEBUG
-            print(popped_element)
+            # print(popped_element)
+            CONSOLE_INTERFACE.print_line(popped_element)
 
             # Change effectevly the current working directory only if 
             # the current working directory is different from the directory 
@@ -207,14 +211,15 @@ def parse_xml(name: str) -> None:
                 pass
             else :
                 # DEBUG
-                print("WARNING! tag that i doesn't know")
+                # print("WARNING! tag that i doesn't know")
+                CONSOLE_INTERFACE.print_line("WARNING! tag that i doesn't know")
         # Check if the last element is a BackupPath or an Element of the tree (END)
 
         # Retrieve all the child elements of the popped_element and put in the stack
         for child in popped_element:
             stack_elements.append(child)
 
-      
+        CONSOLE_INTERFACE.clear()
 
 
     
@@ -225,7 +230,7 @@ if __name__ == "__main__":
     # TEMP
     os.chdir("C:/source/Python/windows-configurator")
 
-    print()
+    CONSOLE_INTERFACE.print_line("")
 
     # Cleaning
     shutil.rmtree("garbage", ignore_errors=True)
@@ -233,6 +238,8 @@ if __name__ == "__main__":
     DIRECTORIES_HANDLER.create_base_directories()
 
     parse_xml("resources.xml")
+
+    CONSOLE_INTERFACE.print_line_at("Hello World!", [5 , 1])
 
     # TODO After all clean all the garbage(NOT IN DEBUG MODE) 
 

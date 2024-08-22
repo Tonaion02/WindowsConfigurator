@@ -10,22 +10,47 @@ import os
 # This is a full static Class
 # This class contains methods(static) to print on the command line output for UI/debug purpose
 # ANSI escape for move cursor:https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+# WARNING: don't use directly print, or it breaks CONSOLE_INTERFACE
 #-------------------------------------------------------------------------------------------------------------------
 class CONSOLE_INTERFACE:
 
-    END_OF_LOGO = (0, 0)
+    END_OF_LOGO = [0, 0]
+
+
 
 
 
     # Back home with cursor (0, 0)
+    # (encoding a tuple of numbers in ANSI)
     @staticmethod
     def __home_cursor_ansi() -> str:
         return '\x1b[H'
     
+    # Set cursor position(encoding a string in ANSI)
+    @staticmethod
+    def __setc_ansi(t: list) -> str:
+        return '\x1b[{};{}f'.format(t[0], t[1])
+
     # Set cursor position
     @staticmethod
-    def __setc_ansi(t: tuple) -> str:
-        return '\x1b[{};{}f'.format(t[0], t[1])
+    def __set_curs(t: list) -> None:
+        print(CONSOLE_INTERFACE.__setc_ansi(t))
+
+    # Back home cursor
+    @staticmethod
+    def __home_curs() -> None:
+        print(CONSOLE_INTERFACE.__setc_ansi())
+
+    # Print line in the CONSOLE_INTERFACE and
+    # move the CURRENT_CURSOR_POS
+    @staticmethod
+    def print_line(line: str) -> None:
+        print(line)
+
+    @staticmethod
+    def print_line_at(line: str, pos: list) -> None:
+        CONSOLE_INTERFACE.__set_curs(pos)
+        print(line)
 
     @staticmethod
     def print_logo() -> None:
@@ -34,10 +59,12 @@ class CONSOLE_INTERFACE:
         print(CONSOLE_COLORS.CYAN + "+===================================================================================================================+")
         print("|                                          WINDOWS-CONFIGURATOR                                                     |")
         print("+===================================================================================================================+" + CONSOLE_COLORS.WHITE)
+        CONSOLE_INTERFACE.END_OF_LOGO = [3, 1]
+        CONSOLE_INTERFACE.CURRENT_CURSOR_POS = CONSOLE_INTERFACE.END_OF_LOGO 
 
-        CONSOLE_INTERFACE.END_OF_LOGO = (3, 1) 
-        print("===================================================================" + CONSOLE_INTERFACE.__setc_ansi((1, 1)) + "Hello")
-        print(CONSOLE_INTERFACE.__setc_ansi((5, 1)))
+    @staticmethod
+    def clear() -> None:
+        os.system('cls')
 
 #===================================================================================================================
 

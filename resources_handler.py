@@ -38,7 +38,8 @@ class RESOURCES_HANDLER:
         # DEBUG
         # TODO only an info now?
         if file_name == None:
-            print("file_name is None")
+            # print("file_name is None")
+            pass
 
         # For now consider only the .zip file extension
         # TODO
@@ -60,7 +61,8 @@ class RESOURCES_HANDLER:
                 with zipfile.ZipFile(temp_path_to_archive, 'r') as zip_ref:
                     zip_ref.extractall(path_to_file)
             else:
-                print("not .zip")
+                pass
+                # print("not .zip")
         # Archive case (END)
 
 
@@ -116,7 +118,7 @@ class RESOURCES_HANDLER:
         # DEBUG
         # TODO add exception
         if content_disposition == None:
-            print("There isn't Content-Disposition in response's headers")
+            # print("There isn't Content-Disposition in response's headers")
             return None
 
         contents = content_disposition.split()
@@ -164,11 +166,13 @@ class RESOURCES_HANDLER:
         pathOutFile.write_bytes(R.content)
 
         if installation_directory == None:
-            print("Da fare!!!")
+            # print("Da fare!!!")
+            pass
         else:
             # subprocess.Popen(outfile + "/S /InstallDirectoryPath=\"C:/test/firefox\"", shell=True)
             res = os.system("choco.exe ")
-            print(res)
+            # print(res)
+
 
 
 
@@ -213,7 +217,8 @@ class RESOURCES_HANDLER:
             # DEBUG
             # TODO improve this error and launch an Exception
             if file_name == None:
-                print("Error file_name is None")
+                pass
+                # print("Error file_name is None")
 
             temp_path_to_archive = os.path.join(DIRECTORIES_HANDLER.DOWNLOADS_DIR, file_name)
             temp_path_to_archive = Path(temp_path_to_archive)
@@ -226,7 +231,8 @@ class RESOURCES_HANDLER:
                 with zipfile.ZipFile(temp_path_to_archive, 'r') as zip_ref:
                     zip_ref.extractall(path_to_file)
             else:
-                print("Error not .zip")
+                pass
+                # print("Error not .zip")
 
             # Update the PATH enviroment variable with the new path to this portable file
             # if it is needed
