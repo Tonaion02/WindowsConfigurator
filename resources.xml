@@ -3,7 +3,10 @@
 <data>
     <directory name="utils"/>
     <directory name="apps"/>
-    <directory name="tools"/>
+    
+    <directory name="tools">
+        <resource name="cmake" add_to_enviroment_path_variable="true" url="https://github.com/Kitware/CMake/releases/download/v3.30.2/cmake-3.30.2-windows-x86_64.zip"/>
+    </directory>
 
     <!-- use ref to refer to this directory from other parts of resources.xml, use name as ref if ref isn't found -->
     <!-- name is the name of the directory in the OS -->
@@ -16,16 +19,22 @@
 
     <directory name="languages">
         <!-- To download, rename and put in the correct directory simply files -->
-        <file name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/>
+        <!-- <file name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/> -->
+        <!-- <software name="premake5" type="portable" add_to_enviroment_path_variable="true" url="https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip"/>
+        <software name="cmake" type="portable" add_to_enviroment_path_variable="true" url="https://github.com/Kitware/CMake/releases/download/v3.30.2/cmake-3.30.2-windows-x86_64.zip"/>
+        <software name="firefox-installer.exe" type="manually" url="https://download.mozilla.org/?product=firefox-stub&amp;os=win&amp;lang=it"/> -->
+
+        <!-- To download, rename and put in the correct directory simply files -->
+        <resource name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/>
         <!-- portable=true no installation, portable=false requires installation so what you download is only installer then garbage -->
         <!-- 'type' can be portable/installable/manually(that means manually_installable) -->
-        <software name="premake5" type="portable" add_to_enviroment_path_variable="true" url="https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip"/>
-        <software name="cmake" type="portable" add_to_enviroment_path_variable="true" url="https://github.com/Kitware/CMake/releases/download/v3.30.2/cmake-3.30.2-windows-x86_64.zip"/>
-        <software name="firefox-installer.exe" type="manually" url="https://download.mozilla.org/?product=firefox-stub&amp;os=win&amp;lang=it"/>
+        <resource name="premake5" add_to_enviroment_path_variable="true" url="https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip"/>
+        <resource name="firefox-installer" manually="true" extension="exe" url="https://download.mozilla.org/?product=firefox-stub&amp;os=win&amp;lang=it"/>
     </directory>
 
 
     
+
 
     <!-- A great part can be "easily" solved with chocolatey -->
     <chocolatey-dependencies path="packages.config"/>

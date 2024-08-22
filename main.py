@@ -36,8 +36,9 @@ def parse_xml(name: str) -> None:
         
     class TAGS:
         DIRECTORY = "directory"
-        FILE = "file"
-        SOFTWARE = "software"
+        RES = "resource"
+        # FILE = "file"
+        # SOFTWARE = "software"
         CHOCO = "chocolatey-dependencies"
         GROUP = "group"
         DATA = "data"
@@ -48,8 +49,10 @@ def parse_xml(name: str) -> None:
         EXT = "extension"
         TYPE = "type"
         ENV = "add_to_enviroment_path_variable"
+        MAN = "manually"
+        INST = "install"
 
-        # This function take a the value of an attribute like a string and convert to a boolean
+        # This function take the value of an attribute like a string and convert to a boolean
         # if it is possible.
         # Correct boolean value or a number(3) in case of error
         # WARNING: for the use of '|' operator that create some sort of Union, we must use
@@ -155,40 +158,53 @@ def parse_xml(name: str) -> None:
                     cwd_path = popped_element_dir_path
                     os.chdir(cwd_path)
 
-            elif popped_element.tag == TAGS.FILE:
-                # Download file, rename it(with correct extension) and put it in the right folder (START)
-                url = popped_element.attrib[ATTRIB.URL]
-                name = popped_element.attrib[ATTRIB.NAME]
-                extension = popped_element.attrib[ATTRIB.EXT]
-                dir = cwd_path
-                name = name + "." + extension
-                RESOURCES_HANDLER.download_file(url, name, dir)
-                # Download file, rename it(with correct extension) and put it in the right folder (END)
+            # elif popped_element.tag == TAGS.FILE:
+            #     # Download file, rename it(with correct extension) and put it in the right folder (START)
+            #     url = popped_element.attrib[ATTRIB.URL]
+            #     name = popped_element.attrib[ATTRIB.NAME]
+            #     extension = popped_element.attrib[ATTRIB.EXT]
+            #     dir = cwd_path
+            #     name = name + "." + extension
+            #     RESOURCES_HANDLER.download_file(url, name, dir)
+            #     # Download file, rename it(with correct extension) and put it in the right folder (END)
 
-            elif popped_element.tag == TAGS.SOFTWARE:
+            # elif popped_element.tag == TAGS.SOFTWARE:
+            #     url = popped_element.attrib.get(ATTRIB.URL)
+            #     name = popped_element.attrib.get(ATTRIB.NAME)
+            #     dir = cwd_path
+            #     type_ = popped_element.attrib.get(ATTRIB.TYPE)
+            #     env_var = ATTRIB.retrieve_bool(popped_element.attrib.get(ATTRIB.ENV))
+
+
+            #     # DEBUG
+            #     # TODO improve (No exception is needed, we handle it here)
+            #     if not ATTRIB.is_valid_software_type(type_):
+            #         print("Value: " + str(type_) + " is not a valid value for the type of software")
+
+            #     if ATTRIB.is_portable(type_):
+            #         RESOURCES_HANDLER.install_software(url, name, dir, True, env_var)
+
+            #     if ATTRIB.is_manually_installable(type_):
+            #         RESOURCES_HANDLER.download_file(url, name, DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR)
+
+            #     if ATTRIB.is_installable(type_):
+            #         # TODO
+            #         pass
+            
+            elif popped_element.tag == TAGS.RES:
                 url = popped_element.attrib.get(ATTRIB.URL)
                 name = popped_element.attrib.get(ATTRIB.NAME)
                 dir = cwd_path
-                type_ = popped_element.attrib.get(ATTRIB.TYPE)
                 env_var = ATTRIB.retrieve_bool(popped_element.attrib.get(ATTRIB.ENV))
+                install = popped_element.attrib.get(ATTRIB.INST)
+                manually_install = popped_element.attrib.get(ATTRIB.MAN)
+                extension = popped_element.attrib.get(ATTRIB.EXT)
 
+                # TODO Check if it is a valid resource
 
+                # TODO pass all the arguments to the magic function
+                RESOURCES_HANDLER.provide_resource(url, name, dir, env_var, install, manually_install, extension)
 
-                # DEBUG
-                # TODO improve (No exception is needed, we handle it here)
-                if not ATTRIB.is_valid_software_type(type_):
-                    print("Value: " + str(type_) + " is not a valid value for the type of software")
-
-                if ATTRIB.is_portable(type_):
-                    RESOURCES_HANDLER.install_software(url, name, dir, True, env_var)
-
-                if ATTRIB.is_manually_installable(type_):
-                    RESOURCES_HANDLER.download_file(url, name, DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR)
-
-                if ATTRIB.is_installable(type_):
-                    # TODO
-                    pass
-            
             elif popped_element.tag == TAGS.CHOCO:
                 pass
             elif popped_element.tag == TAGS.GROUP:
@@ -212,13 +228,6 @@ if __name__ == "__main__":
 
     CONSOLE_INTERFACE.print_logo()
 
-    # # TEMP
-    # # Testing changing enviroments' variables
-    # os.system("SETX TEST_VARIABLE ciao")
-    # t = os.getenv("PATH")
-    # print("$TEST_VARIABLE: " + str(t))
-    # os.system("SETX TEST_VARIABLE " + "\"" + t + "ciao" + "\"")
-
     # TEMP
     os.chdir("C:/source/Python/windows-configurator")
 
@@ -236,4 +245,4 @@ if __name__ == "__main__":
     # After all clean all the garbage(NOT IN DEBUG MODE) TODO
 
     # TEMP
-    ENV_VAR_HANDLER.update_enviroment_variable("PATH", "hello" + ";")
+    # ENV_VAR_HANDLER.update_enviroment_variable("PATH", "hello" + ";")
