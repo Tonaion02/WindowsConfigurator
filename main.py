@@ -184,11 +184,15 @@ def parse_xml(name: str) -> None:
                     install = False
 
                 if internal_dirs == None:
-                    internal_dirs = ""
+                    internal_dirs = []
+                else:
+                    internal_dirs = internal_dirs.split(",")
+                    if len(internal_dirs) > 0 and internal_dirs[len(internal_dirs)-1] == "":
+                        internal_dirs.pop()
                 # Retrieve attributes' value from the element (END)
 
                 # Skip the resource if it is not valid
-                if RESOURCES_HANDLER.is_valid_resource(url, name, dir, env_var, install, manually_install, extension):
+                if RESOURCES_HANDLER.is_valid_resource(url, name, dir, env_var, install, manually_install, extension, internal_dirs):
                     RESOURCES_HANDLER.provide_resource(url, name, dir, env_var, install, manually_install, extension, internal_dirs)
                 else:
                     # DEBUG

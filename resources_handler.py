@@ -21,7 +21,7 @@ class RESOURCES_HANDLER:
     @staticmethod
     # TODO add a variable for the arguments of the installers
     # TODO 
-    def provide_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str, internal_dirs: str):
+    def provide_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str, internal_dirs: list[str]):
         # Retrieve the resource from the url
         response = requests.get(url, allow_redirects=True)
         if response.status_code != 200:
@@ -87,12 +87,13 @@ class RESOURCES_HANDLER:
         if internal_dirs != "":
             # Update the PATH enviroment variable with internal dirs
             # to this portable file
-            internal_dirs = os.path.join(path_to_file, internal_dirs)
-            ENV_VAR_HANDLER.update_enviroment_variable("PATH", internal_dirs + ";")
+            for internal_dir in internal_dirs:
+                internal_dir = os.path.join(path_to_file, internal_dir)
+                ENV_VAR_HANDLER.update_enviroment_variable("PATH", internal_dir + ";")
 
     @staticmethod
     # TODO
-    def is_valid_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str):
+    def is_valid_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str, internal_dirs: list[str]):
 
         # ERROR if (no)extension + install(we can't install without being sure about the extension)
         if extension == "" and install == True:
