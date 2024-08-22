@@ -17,6 +17,7 @@ from enviroment_variable_handler import ENV_VAR_HANDLER
 # This class contains methods(static) to handle resources
 #-------------------------------------------------------------------------------------------------------------------
 class RESOURCES_HANDLER:
+    # TEMP
     @staticmethod
     def install_software_test(url: str, outfile, installation_directory=None):
         R = requests.get(url, allow_redirects=True)
@@ -71,6 +72,8 @@ class RESOURCES_HANDLER:
         if response.status_code != 200:
             raise ConnectionError('could not download {}\nerror code: {}'.format(url, response.status_code))
 
+        # Trying to understand if we can understand the extension of the file automatically
+        # TODO
         name_downloaded_file = RESOURCES_HANDLER.retrieve_file_name_from_response(response)
         if name_downloaded_file != None:
             name_downloaded_file = name_downloaded_file.replace("\"", "")
@@ -81,9 +84,9 @@ class RESOURCES_HANDLER:
         path_to_file_PATH.write_bytes(response.content)
 
     # Routine to download and install(if it is needed) a software
-    # In the case of a portable file, it automatically understand if it 
-    # is needed to unzip/unrar the file. We can specify if it is portable
-    # with portable paramter.
+    # In the case of a portable file, it try to automatically understand if it 
+    # is needed to unzip/unrar the file. In some case is already necessary to
+    # specify. We can specify if it is portable with portable parameter.
     # With update_env_path_var parameter we specify if we must add the path
     # to the file or .exe to the enviroment variable
     @staticmethod
@@ -96,26 +99,6 @@ class RESOURCES_HANDLER:
         path_to_file = os.path.join(dir, name)
 
         if portable:    
-            # # Content-Disposition is an header of a response
-            # # The Content-Disposition contains the name of the downloaded file
-            # # We use the name of the downloaed file to check if it is a zip or a Rar etc
-            # content_disposition = response.headers.get('Content-Disposition')
-
-            # # DEBUG
-            # if content_disposition == None:
-            #     print("There isn't Content-Disposition in response's headers")
-            # contents = content_disposition.split()
-
-            # # Retrieve filename from the Content-Disposition
-            # file_name = None
-            # for content in contents:
-            #     found = content.find('filename')
-
-            #     if found >= 0:
-            #         index = content.find("=")
-            #         file_name = content[index + 1:]
-            #         break
-
             file_name = RESOURCES_HANDLER.retrieve_file_name_from_response(response)
 
             # DEBUG
@@ -145,7 +128,4 @@ class RESOURCES_HANDLER:
         elif not portable:
             # TODO
             pass
-
-
-
 #===================================================================================================================

@@ -85,6 +85,7 @@ def parse_xml(name: str) -> None:
             return type_ == 'manually'
         # Methods(static) to verify that value of attribute named 'type' is valid or has a specific value (END)
 
+    @staticmethod
     def print_element(e):
         if isinstance(e, BackupPath): 
             print(str(e))

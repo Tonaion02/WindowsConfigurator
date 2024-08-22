@@ -28,14 +28,10 @@ class ENV_VAR_HANDLER:
         # TODO 
         name = "TEMP_PATH"
 
-        prev_value = os.getenv(name)
+        prev_value = os.environ.get(name)
         if prev_value == None:
             prev_value = ""
 
-        prev_value_ = os.environ.get(name)
-        if prev_value_ == None:
-            prev_value_ = ""
-
-        os.system("SETX " + name + " \"" + prev_value + value + "\"")
-        os.environ[name] = " \"" + prev_value_ + value + "\""
+        os.system("SETX " + name + " " + prev_value + "\"" + value + "\"")
+        os.environ[name] = prev_value + value
 #===================================================================================================================
