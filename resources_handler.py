@@ -21,7 +21,7 @@ class RESOURCES_HANDLER:
     @staticmethod
     # TODO add a variable for the arguments of the installers
     # TODO 
-    def provide_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str):
+    def provide_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str, internal_dirs: str):
         # Retrieve the resource from the url
         response = requests.get(url, allow_redirects=True)
         if response.status_code != 200:
@@ -82,7 +82,13 @@ class RESOURCES_HANDLER:
         if env_var == True:
             # Update the PATH enviroment variable with the new path 
             # to this portable file if it is needed
-            ENV_VAR_HANDLER.update_enviroment_variable("PATH", path_to_file + ";") 
+            ENV_VAR_HANDLER.update_enviroment_variable("PATH", path_to_file + ";")
+
+        if internal_dirs != "":
+            # Update the PATH enviroment variable with internal dirs
+            # to this portable file
+            internal_dirs = os.path.join(path_to_file, internal_dirs)
+            ENV_VAR_HANDLER.update_enviroment_variable("PATH", internal_dirs + ";")
 
     @staticmethod
     # TODO

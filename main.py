@@ -51,6 +51,7 @@ def parse_xml(name: str) -> None:
         ENV = "add_to_enviroment_path_variable"
         MAN = "manually"
         INST = "install"
+        INT_DIRS = "internal_dirs"
 
         # This function take the value of an attribute like a string and convert to a boolean
         # if it is possible.
@@ -167,9 +168,11 @@ def parse_xml(name: str) -> None:
                 name = popped_element.attrib.get(ATTRIB.NAME)
                 dir = cwd_path
                 env_var = ATTRIB.retrieve_bool(popped_element.attrib.get(ATTRIB.ENV))
+                
                 install = popped_element.attrib.get(ATTRIB.INST)
                 manually_install = popped_element.attrib.get(ATTRIB.MAN)
                 extension = popped_element.attrib.get(ATTRIB.EXT)
+                internal_dirs = popped_element.attrib.get(ATTRIB.INT_DIRS)
 
                 if extension == None:
                     extension = ""
@@ -179,11 +182,14 @@ def parse_xml(name: str) -> None:
                 
                 if install == None:
                     install = False
+
+                if internal_dirs == None:
+                    internal_dirs = ""
                 # Retrieve attributes' value from the element (END)
 
                 # Skip the resource if it is not valid
                 if RESOURCES_HANDLER.is_valid_resource(url, name, dir, env_var, install, manually_install, extension):
-                    RESOURCES_HANDLER.provide_resource(url, name, dir, env_var, install, manually_install, extension)
+                    RESOURCES_HANDLER.provide_resource(url, name, dir, env_var, install, manually_install, extension, internal_dirs)
                 else:
                     # DEBUG
                     # TODO show error caused by the resource 
