@@ -88,7 +88,7 @@ class RESOURCES_HANDLER:
 
     @staticmethod
     # TODO
-    def is_valid_resource():
+    def is_valid_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str):
 
         # ERROR if (no)extension + install(we can't install without being sure about the extension)
 

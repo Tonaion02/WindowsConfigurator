@@ -136,8 +136,9 @@ def parse_xml(name: str) -> None:
             # DEBUG
             print(popped_element)
 
-            # Change effectevly the current working directory only if the current working directory
-            # is different from the directory where we must be
+            # Change effectevly the current working directory only if 
+            # the current working directory is different from the directory 
+            # where we must be
             # TODO verify that works properly
             if cwd_path != popped_element.intern:
                 cwd_path = popped_element.intern
@@ -146,50 +147,19 @@ def parse_xml(name: str) -> None:
 
         elif type(popped_element) is ET.Element:
             if popped_element.tag == TAGS.DIRECTORY:
-                # If the directory "cwd_path\popped_element.attrib['name']" doesn't exist create it
+                # If the directory "cwd_path\popped_element.attrib['name']" 
+                # doesn't exist create it
                 popped_element_dir_path = os.path.join(cwd_path, popped_element.attrib[ATTRIB.NAME])
                 if not os.path.isdir(popped_element_dir_path):
                     os.mkdir(popped_element_dir_path)
 
-                # if the directory isn't empty and we are in another directory, change directory
-                # then save the current value of cwd_path in a BackupPath in a 
+                # if the directory isn't empty and we are in another directory, 
+                # change directory then save the current value of cwd_path in 
+                # a BackupPath 
                 if len(list(popped_element)) > 0:
                     stack_elements.append(BackupPath(cwd_path))
                     cwd_path = popped_element_dir_path
                     os.chdir(cwd_path)
-
-            # elif popped_element.tag == TAGS.FILE:
-            #     # Download file, rename it(with correct extension) and put it in the right folder (START)
-            #     url = popped_element.attrib[ATTRIB.URL]
-            #     name = popped_element.attrib[ATTRIB.NAME]
-            #     extension = popped_element.attrib[ATTRIB.EXT]
-            #     dir = cwd_path
-            #     name = name + "." + extension
-            #     RESOURCES_HANDLER.download_file(url, name, dir)
-            #     # Download file, rename it(with correct extension) and put it in the right folder (END)
-
-            # elif popped_element.tag == TAGS.SOFTWARE:
-            #     url = popped_element.attrib.get(ATTRIB.URL)
-            #     name = popped_element.attrib.get(ATTRIB.NAME)
-            #     dir = cwd_path
-            #     type_ = popped_element.attrib.get(ATTRIB.TYPE)
-            #     env_var = ATTRIB.retrieve_bool(popped_element.attrib.get(ATTRIB.ENV))
-
-
-            #     # DEBUG
-            #     # TODO improve (No exception is needed, we handle it here)
-            #     if not ATTRIB.is_valid_software_type(type_):
-            #         print("Value: " + str(type_) + " is not a valid value for the type of software")
-
-            #     if ATTRIB.is_portable(type_):
-            #         RESOURCES_HANDLER.install_software(url, name, dir, True, env_var)
-
-            #     if ATTRIB.is_manually_installable(type_):
-            #         RESOURCES_HANDLER.download_file(url, name, DIRECTORIES_HANDLER.TO_MANUALLY_INSTALL_DIR)
-
-            #     if ATTRIB.is_installable(type_):
-            #         # TODO
-            #         pass
             
             elif popped_element.tag == TAGS.RES:
                 url = popped_element.attrib.get(ATTRIB.URL)
@@ -200,10 +170,13 @@ def parse_xml(name: str) -> None:
                 manually_install = popped_element.attrib.get(ATTRIB.MAN)
                 extension = popped_element.attrib.get(ATTRIB.EXT)
 
-                # TODO Check if it is a valid resource
-
-                # TODO pass all the arguments to the magic function
-                RESOURCES_HANDLER.provide_resource(url, name, dir, env_var, install, manually_install, extension)
+                # Skip the resource if it is not valid
+                if RESOURCES_HANDLER.is_valid_resource(url, name, dir, env_var, install, manually_install, extension):
+                    RESOURCES_HANDLER.provide_resource(url, name, dir, env_var, install, manually_install, extension)
+                else:
+                    # DEBUG
+                    # TODO show error caused by the resource 
+                    pass
 
             elif popped_element.tag == TAGS.CHOCO:
                 pass
@@ -237,8 +210,6 @@ if __name__ == "__main__":
     shutil.rmtree("garbage", ignore_errors=True)
 
     DIRECTORIES_HANDLER.create_base_directories()
-
-    # install_software("https://download.mozilla.org/?product=firefox-stub&os=win&lang=it", "firefox-installer.exe", "abla")
 
     parse_xml("resources.xml")
 
