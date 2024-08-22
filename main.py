@@ -162,6 +162,7 @@ def parse_xml(name: str) -> None:
                     os.chdir(cwd_path)
             
             elif popped_element.tag == TAGS.RES:
+                # Retrieve attributes' value from the element (START)
                 url = popped_element.attrib.get(ATTRIB.URL)
                 name = popped_element.attrib.get(ATTRIB.NAME)
                 dir = cwd_path
@@ -169,6 +170,16 @@ def parse_xml(name: str) -> None:
                 install = popped_element.attrib.get(ATTRIB.INST)
                 manually_install = popped_element.attrib.get(ATTRIB.MAN)
                 extension = popped_element.attrib.get(ATTRIB.EXT)
+
+                if extension == None:
+                    extension = ""
+                
+                if manually_install == None:
+                    manually_install = False
+                
+                if install == None:
+                    install = False
+                # Retrieve attributes' value from the element (END)
 
                 # Skip the resource if it is not valid
                 if RESOURCES_HANDLER.is_valid_resource(url, name, dir, env_var, install, manually_install, extension):
@@ -213,7 +224,7 @@ if __name__ == "__main__":
 
     parse_xml("resources.xml")
 
-    # After all clean all the garbage(NOT IN DEBUG MODE) TODO
+    # TODO After all clean all the garbage(NOT IN DEBUG MODE) 
 
     # TEMP
     # ENV_VAR_HANDLER.update_enviroment_variable("PATH", "hello" + ";")

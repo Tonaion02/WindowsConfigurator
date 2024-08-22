@@ -32,8 +32,6 @@ class RESOURCES_HANDLER:
         path_to_file = None
 
         # Archive case (START)
-        # TODO check if we need to unrar/unzip and in the case do it
-        # in case place in downloadsTmp
         # TODO check if we have always file_name for the .zip/.rar
         file_name = RESOURCES_HANDLER.retrieve_file_name_from_response(response)
 
@@ -91,8 +89,12 @@ class RESOURCES_HANDLER:
     def is_valid_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str):
 
         # ERROR if (no)extension + install(we can't install without being sure about the extension)
+        if extension == "" and install == True:
+            return False
 
         # ERROR if manually_install + install
+        if install == True and manually_install == True:
+            return False
 
         return True
 
