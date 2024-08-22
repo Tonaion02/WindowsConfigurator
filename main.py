@@ -139,7 +139,7 @@ def parse_xml(name: str) -> None:
         if isinstance(popped_element, BackupPath):
             # DEBUG
             # print(popped_element)
-            CONSOLE_INTERFACE.print_line(popped_element)
+            CONSOLE_INTERFACE.print_line(str(popped_element))
 
             # Change effectevly the current working directory only if 
             # the current working directory is different from the directory 
@@ -225,15 +225,15 @@ def parse_xml(name: str) -> None:
     
 if __name__ == "__main__":
 
-    CONSOLE_INTERFACE.print_logo()
-
     # TEMP
     os.chdir("C:/source/Python/windows-configurator")
 
-    CONSOLE_INTERFACE.print_line("")
-
     # Cleaning
     shutil.rmtree("garbage", ignore_errors=True)
+
+    CONSOLE_INTERFACE.init(True)
+    CONSOLE_INTERFACE.print_logo()
+    CONSOLE_INTERFACE.print_line("")
 
     DIRECTORIES_HANDLER.create_base_directories()
 
@@ -245,3 +245,5 @@ if __name__ == "__main__":
 
     # TEMP
     # ENV_VAR_HANDLER.update_enviroment_variable("PATH", "hello" + ";")
+
+    CONSOLE_INTERFACE.close()

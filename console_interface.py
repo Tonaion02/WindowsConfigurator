@@ -10,15 +10,23 @@ import os
 # This is a full static Class
 # This class contains methods(static) to print on the command line output for UI/debug purpose
 # ANSI escape for move cursor:https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
-# WARNING: don't use directly print, or it breaks CONSOLE_INTERFACE
+# WARNING: don't use directly print, it can be break CONSOLE_INTERFACE
 #-------------------------------------------------------------------------------------------------------------------
 class CONSOLE_INTERFACE:
 
     END_OF_LOGO = [0, 0]
+    __DEBUG = None
+    __DEBUG_LOG_FILE = None
 
 
 
 
+
+    # Init CONSOLE_INTERFACE
+    def init(debug: bool) -> None:
+        CONSOLE_INTERFACE.__DEBUG = debug
+        if CONSOLE_INTERFACE.__DEBUG:
+            CONSOLE_INTERFACE.__DEBUG_LOG_FILE = open("debug_log.txt", "w")
 
     # Back home with cursor (0, 0)
     # (encoding a tuple of numbers in ANSI)
@@ -41,21 +49,22 @@ class CONSOLE_INTERFACE:
     def __home_curs() -> None:
         print(CONSOLE_INTERFACE.__setc_ansi())
 
-    # Print line in the CONSOLE_INTERFACE and
-    # move the CURRENT_CURSOR_POS
+    # Print line in the CONSOLE_INTERFACE
     @staticmethod
     def print_line(line: str) -> None:
         print(line)
+        if CONSOLE_INTERFACE.__DEBUG:
+            CONSOLE_INTERFACE.__DEBUG_LOG_FILE.write(line + "\n")
 
     @staticmethod
     def print_line_at(line: str, pos: list) -> None:
         CONSOLE_INTERFACE.__set_curs(pos)
         print(line)
+        if CONSOLE_INTERFACE.__DEBUG:
+            CONSOLE_INTERFACE.__DEBUG_LOG_FILE.write(line + "\n")
 
     @staticmethod
     def print_logo() -> None:
-        os.system('cls')
-
         print(CONSOLE_COLORS.CYAN + "+===================================================================================================================+")
         print("|                                          WINDOWS-CONFIGURATOR                                                     |")
         print("+===================================================================================================================+" + CONSOLE_COLORS.WHITE)
@@ -65,8 +74,15 @@ class CONSOLE_INTERFACE:
     @staticmethod
     def clear() -> None:
         os.system('cls')
+        CONSOLE_INTERFACE.print_logo()
+
+    @staticmethod
+    def close() -> None:
+        CONSOLE_INTERFACE.__DEBUG_LOG_FILE.close()
 
 #===================================================================================================================
+
+
 
 
 
