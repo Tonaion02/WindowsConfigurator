@@ -3,6 +3,8 @@ import os
 import zipfile
 from pathlib import Path
 
+import magic
+
 from directories_handler import DIRECTORIES_HANDLER 
 from enviroment_variable_handler import ENV_VAR_HANDLER
 
@@ -32,12 +34,14 @@ class RESOURCES_HANDLER:
         path_to_file = None
 
         # Archive case (START)
-        # TODO check if we have always file_name for the .zip/.rar
-        file_name = RESOURCES_HANDLER.retrieve_file_name_from_response(response)
-
+        # Search for extension if it is not already setted from
+        # the userim
+        if extension == "":
+            extension = RESOURCES_HANDLER.__retrieve_file_extension(url, response)
+        
         # DEBUG
         # TODO only an info now?
-        if file_name == None:
+        if extension == "":
             # print("file_name is None")
             pass
 
@@ -47,27 +51,21 @@ class RESOURCES_HANDLER:
         # (ignore that the output can be anything different 
         # than a folder)
         # TODO
-        # Check if have extension
-        # TODO
-        if file_name != None:
-            found = file_name.find(".zip")
-            if found != -1:
+        if extension != "":
+            if extension == "zip":
                 path_to_file = os.path.join(dir, name)
 
-                temp_path_to_archive = os.path.join(DIRECTORIES_HANDLER.DOWNLOADS_DIR, file_name)
+                temp_path_to_archive = os.path.join(DIRECTORIES_HANDLER.DOWNLOADS_DIR, name + "." + extension)
                 temp_path_to_archive = Path(temp_path_to_archive)
                 temp_path_to_archive.write_bytes(response.content)
 
                 with zipfile.ZipFile(temp_path_to_archive, 'r') as zip_ref:
                     zip_ref.extractall(path_to_file)
-            else:
-                pass
-                # print("not .zip")
         # Archive case (END)
 
 
 
-        if extension == True:
+        if extension != "":
             # apply the extension to the name of the file
             name = name + "." + extension
 
@@ -107,9 +105,48 @@ class RESOURCES_HANDLER:
 
         return True
 
+    # This methods retrieve extension of the file that is 
+    # the resource that we are trying to download.
+    # TODO use magic to resolve this problem
+    # TODO optimize we can simply save before the file
+    # and next move the file in the correct
+    # location 
+    @staticmethod
+    def __retrieve_file_extension(url : str, response) -> str:
+
+        # Try first with Content-Disposition of the response
+        file_name = RESOURCES_HANDLER.__retrieve_file_name_from_response(response)
+
+        if file_name != None:
+            found = file_name.rfind(".")
+            if found != -1:
+                return file_name[found+1:]
+
+        # # Try with the url
+        # last_slash_index = url.rfind("/")
+        # if last_slash_index != -1 and last_slash_index+1 < len(url):
+        #     return url[last_slash_index:]
+
+        # TODO
+        # Try with Content-Type of the response
+
+        # Determinize extension with magic
+        # TODO optimize here
+        temp_file = "temporary_to_determine_extension"
+        path_to_temp_file = os.path.join(DIRECTORIES_HANDLER.DOWNLOADS_DIR, temp_file)
+        PATH_to_temp_file = Path(path_to_temp_file)
+        PATH_to_temp_file.write_bytes(response.content)
+        extension = magic.from_file(path_to_temp_file, mime=True)
+        extension = extension[extension.find("/")+1:]
+        # particular cases
+        if extension.find("exe") != -1:
+            extension = "exe"
+
+        return extension
+
     # This methods retrive file_name from an the headers of an HTTP response
     @staticmethod
-    def retrieve_file_name_from_response(response) -> str | None:
+    def __retrieve_file_name_from_response(response) -> str | None:
         # Content-Disposition is an header of a response
         # The Content-Disposition contains the name of the downloaded file
         # We use the name of the downloaed file to check if it is a zip or a Rar etc

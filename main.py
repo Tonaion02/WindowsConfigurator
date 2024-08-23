@@ -53,21 +53,19 @@ def parse_xml(name: str) -> None:
 
         # This function take the value of an attribute like a string and convert to a boolean
         # if it is possible.
-        # Correct boolean value or a number(3) in case of error
-        # WARNING: for the use of '|' operator that create some sort of Union, we must use
-        # and support only Python 3.10
+        # Correct boolean value or false in case the value passed is None
         @staticmethod
-        def retrieve_bool(attrib_value: str) -> int | bool:
+        def retrieve_bool(attrib_value: str) -> None | bool:
             if attrib_value == None or len(attrib_value) != 4:
-                return 3
+                return False
 
             attrib_value = attrib_value[0].upper() + attrib_value[1:].lower()
             if attrib_value == 'True':
                 return True
             elif attrib_value == 'False':
                 return False
-
-            return 3
+            
+            return False
         
         # Methods(static) to verify that value of attribute named 'type' is valid or has a specific value (START)
         @staticmethod
@@ -173,19 +171,13 @@ def parse_xml(name: str) -> None:
                 dir = cwd_path
                 env_var = ATTRIB.retrieve_bool(popped_element.attrib.get(ATTRIB.ENV))
                 
-                install = popped_element.attrib.get(ATTRIB.INST)
-                manually_install = popped_element.attrib.get(ATTRIB.MAN)
+                install = ATTRIB.retrieve_bool(popped_element.attrib.get(ATTRIB.INST))
+                manually_install = ATTRIB.retrieve_bool(popped_element.attrib.get(ATTRIB.MAN))
                 extension = popped_element.attrib.get(ATTRIB.EXT)
                 internal_dirs = popped_element.attrib.get(ATTRIB.INT_DIRS)
 
                 if extension == None:
                     extension = ""
-                
-                if manually_install == None:
-                    manually_install = False
-                
-                if install == None:
-                    install = False
 
                 if internal_dirs == None:
                     internal_dirs = []

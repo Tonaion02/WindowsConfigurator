@@ -5,7 +5,10 @@
     <directory name="apps"/>
     
     <directory name="tools">
+        <resource name="premake5" add_to_enviroment_path_variable="true" url="https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip"/>
         <resource name="cmake" internal_dirs="cmake-3.30.2-windows-x86_64" url="https://github.com/Kitware/CMake/releases/download/v3.30.2/cmake-3.30.2-windows-x86_64.zip"/>
+        <resource name="tracy_0_11_1" add_to_enviroment_path_variable="true" url="https://github.com/wolfpld/tracy/releases/download/v0.11.1/windows-0.11.1.zip"/>
+        <resource name="renderDoc" url="https://renderdoc.org/stable/1.34/RenderDoc_1.34_64.zip"/>
     </directory>
 
     <!-- use ref to refer to this directory from other parts of resources.xml, use name as ref if ref isn't found -->
@@ -28,7 +31,6 @@
         <resource name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/>
         <!-- portable=true no installation, portable=false requires installation so what you download is only installer then garbage -->
         <!-- 'type' can be portable/installable/manually(that means manually_installable) -->
-        <resource name="premake5" add_to_enviroment_path_variable="true" url="https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip"/>
         <resource name="firefox-installer" manually="true" extension="exe" url="https://download.mozilla.org/?product=firefox-stub&amp;os=win&amp;lang=it"/>
     </directory>
 
