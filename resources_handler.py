@@ -20,6 +20,27 @@ from enviroment_variable_handler import ENV_VAR_HANDLER
 #-------------------------------------------------------------------------------------------------------------------
 class RESOURCES_HANDLER:
 
+    __DEBUG = False
+
+
+
+    # Init RESOURCES_HANDLER
+    @staticmethod
+    def init(debug: bool) -> None:
+        RESOURCES_HANDLER.__DEBUG = debug
+
+
+
+    # Unique function to provide a resourse from his attributes
+    # describing parameters:
+    # url:              url from we can download the resource
+    # name:             name that we give to resource
+    # dir:              directory where we want to place resource
+    # env_var:          bool that indicates if we want to add or not the path(dir/name) to resource to PATH enviroment variable
+    # install:          bool that indicates if we want to install or not the resource
+    # manually_install: bool that indicates if the resource must be installed manually, we put the resource under INTERNAL_DIRECTORIES.TO_MANUALLY_INSTALL_DIR
+    # extension:        str that indicates the extension of the resource
+    # internal_dirs:    this list of str indicates internal directories that we want to add to PATH enviroment variable, so for each element 'internal_dir' of the directories we put in PATH dir/name/internal_dir
     @staticmethod
     # TODO add a variable for the arguments of the installers
     # TODO 
@@ -144,7 +165,10 @@ class RESOURCES_HANDLER:
 
         return extension
 
-    # This methods retrive file_name from an the headers of an HTTP response
+    # This methods try to retrieve the file's name from 
+    # the header 'Content-Disposition' of the 
+    # HTTPS response
+    # NOTE: not in
     @staticmethod
     def __retrieve_file_name_from_response(response) -> str | None:
         # Content-Disposition is an header of a response

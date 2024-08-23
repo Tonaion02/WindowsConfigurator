@@ -17,13 +17,6 @@ from resources_handler import RESOURCES_HANDLER
 
 
 
-
-DIRECTORIES_HANDLER.init("C:/source/Python/windows-configurator")
-
-
-
-
-
 # TEMP
 def parse_xml(name: str) -> None:
 
@@ -217,13 +210,21 @@ def parse_xml(name: str) -> None:
     
 if __name__ == "__main__":
 
+    DEBUG = True
+
+    DIRECTORIES_HANDLER.init("C:/source/Python/windows-configurator", DEBUG)
+    RESOURCES_HANDLER.init(DEBUG)
+    ENV_VAR_HANDLER.init(DEBUG)
+
+
+
     # TEMP
     os.chdir("C:/source/Python/windows-configurator")
 
     # Cleaning
     shutil.rmtree("garbage", ignore_errors=True)
 
-    CONSOLE_INTERFACE.init(True)
+    CONSOLE_INTERFACE.init(DEBUG)
     CONSOLE_INTERFACE.print_logo()
     CONSOLE_INTERFACE.print_line("")
 

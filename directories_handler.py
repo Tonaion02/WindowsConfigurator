@@ -31,7 +31,7 @@ class DIRECTORIES_HANDLER:
     TO_MANUALLY_INSTALL_DIR = None
 
     # Don't touch this, PRIVATE (START)
-    _debug = True
+    _debug = False
 
 
 
@@ -57,7 +57,10 @@ class DIRECTORIES_HANDLER:
 
 
     @staticmethod
-    def init(path: str):
+    def init(path: str, debug: bool):
+
+        DIRECTORIES_HANDLER._debug = debug
+
         if DIRECTORIES_HANDLER._debug:
             DIRECTORIES_HANDLER._BASE_DIR = os.path.join(path, DIRECTORIES_HANDLER._GARBAGE_DIR)
 

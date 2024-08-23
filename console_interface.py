@@ -25,7 +25,7 @@ class CONSOLE_INTERFACE:
     # Init CONSOLE_INTERFACE
     def init(debug: bool) -> None:
         CONSOLE_INTERFACE.__DEBUG = debug
-        if CONSOLE_INTERFACE.__DEBUG:
+        if CONSOLE_INTERFACE.__DEBUG == True:
             CONSOLE_INTERFACE.__DEBUG_LOG_FILE = open("debug_log.txt", "w")
 
     # Back home with cursor (0, 0)
@@ -53,14 +53,14 @@ class CONSOLE_INTERFACE:
     @staticmethod
     def print_line(line: str) -> None:
         print(line)
-        if CONSOLE_INTERFACE.__DEBUG:
+        if CONSOLE_INTERFACE.__DEBUG == True:
             CONSOLE_INTERFACE.__DEBUG_LOG_FILE.write(line + "\n")
 
     @staticmethod
     def print_line_at(line: str, pos: list) -> None:
         CONSOLE_INTERFACE.__set_curs(pos)
         print(line)
-        if CONSOLE_INTERFACE.__DEBUG:
+        if CONSOLE_INTERFACE.__DEBUG == True:
             CONSOLE_INTERFACE.__DEBUG_LOG_FILE.write(line + "\n")
 
     @staticmethod
