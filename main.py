@@ -196,7 +196,6 @@ def parse_xml(name: str) -> None:
                 pass
             else :
                 # DEBUG
-                # print("WARNING! tag that i doesn't know")
                 CONSOLE_INTERFACE.print_line("WARNING! tag that i doesn't know")
         # Check if the last element is a BackupPath or an Element of the tree (END)
 

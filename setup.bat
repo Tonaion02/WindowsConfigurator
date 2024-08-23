@@ -5,4 +5,5 @@ curl --output pythonInstaller.exe https://www.python.org/ftp/python/3.12.5/pytho
 PAUSE
 pythonInstaller.exe /passive /quiet /log log.txt TargetDir="C:\Python_3_12_5"
 SETX Path "C:\Python_3_12_5;C:\Python_3_12_5\Scripts;"
+pip install python-magic-bin
 PAUSE
