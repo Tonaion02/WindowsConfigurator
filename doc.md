@@ -3,21 +3,29 @@
 In the following we describe the meaning of each tag and attribute that you can use in resourse.xml.
 
 ## Tags
-- \<data\>: this tag is used as root tag of the resources.xml.
-- \<directory\>: this tag is used to create a directory under the current working directory. 
-- \<resource\>: this tag is used.  
-- \<chocolatey-dependencies\>: this tag is used to 
+
+| Name                              | Description and use                                                                   |
+|:----------------------------------|:--------------------------------------------------------------------------------------|
+| \<data\>                          | used like the root tag of the resources.xml                                           |
+| \<directory>\                     | used to create a directory under the current working directory                        |
+| \<resource\>                      | used to indicate a resource in the operating system                                   |
+| \<chocolatey-dependencies\>       | used to indicate the file where is listed the dependenceis to resolve with chocolatey |
 
 ## Attributes
+The attributes is used to specify some options and important information for each tag.
 
-| Name                              | Type  | Default Value | Optional  | Appliable                     |
-|:----------------------------------|:------|:--------------|:----------|:------------------------------|
-|name                               |string | not default   | no        | \<directory\>,\<resource\>    |
-|url                                |string | not default   | no        | \<resource\>                  |
-|install                            |bool   | false         | yes       | \<resource\>                  |
-|manually_install                   |bool   | false         | yes       | \<resource\>                  |
-|add_to_enviroment_path_variable    |bool   | false         | yes       | \<resource\>                  |
-|internal_dirs                      |string | ""            | yes       | \<resource\>                  |
+| Name                              | Type  | Default Value | Optional  | Appliable                     | Description and use|
+|:----------------------------------|:------|:--------------|:----------|:------------------------------||
+|name                               |string | not default   | no        | \<directory\>,\<resource\>    ||
+|url                                |string | not default   | no        | \<resource\>                  ||
+|install                            |bool   | false         | yes       | \<resource\>                  ||
+|manually_install                   |bool   | false         | yes       | \<resource\>                  ||
+|add_to_enviroment_path_variable    |bool   | false         | yes       | \<resource\>                  ||
+|internal_dirs                      |string | ""            | yes       | \<resource\>                  ||
+
+Rules:
+when we are writing the resources.xml we must consider
+- 
 
 ## Example
 
