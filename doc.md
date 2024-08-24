@@ -14,14 +14,14 @@ In the following we describe the meaning of each tag and attribute that you can 
 ## Attributes
 The attributes is used to specify some options and important information for each tag.
 
-| Name                              | Type  | Default Value | Optional  | Appliable                     | Description and use|
-|:----------------------------------|:------|:--------------|:----------|:------------------------------||
-|name                               |string | not default   | no        | \<directory\>,\<resource\>    ||
-|url                                |string | not default   | no        | \<resource\>                  ||
-|install                            |bool   | false         | yes       | \<resource\>                  ||
-|manually_install                   |bool   | false         | yes       | \<resource\>                  ||
-|add_to_enviroment_path_variable    |bool   | false         | yes       | \<resource\>                  ||
-|internal_dirs                      |string | ""            | yes       | \<resource\>                  ||
+| Name                              | Description and use                                                                       | Type  | Default Value | Optional  | Appliable                     |
+|:----------------------------------|:------------------------------------------------------------------------------------------|:------|:--------------|:----------|:------------------------------|
+|name                               | used to decide the name of the resource on the filesystem                                 |string | not default   | no        | \<directory\>,\<resource\>    |
+|url                                | url where to retrieve the resource                                                        |string | not default   | no        | \<resource\>                  |
+|install                            | indicate that the resource must be installed                                              |bool   | false         | yes       | \<resource\>                  |
+|manually_install                   | indicate that the resource must be placed under the directory toManuallyInstall           |bool   | false         | yes       | \<resource\>                  |
+|add_to_enviroment_path_variable    | indicate that the path to resource must be placed in the Path enviroment variable         |bool   | false         | yes       | \<resource\>                  |
+|internal_dirs                      | internal directories of path to resource must be place in the Path enviroment variable    |string | ""            | yes       | \<resource\>                  |
 
 Rules:
 when we are writing the resources.xml we must consider
