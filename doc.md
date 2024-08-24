@@ -14,18 +14,30 @@ In the following we describe the meaning of each tag and attribute that you can 
 ## Attributes
 The attributes is used to specify some options and important information for each tag.
 
-| Name                              | Description and use                                                                       | Type  | Default Value | Optional  | Appliable                     |
-|:----------------------------------|:------------------------------------------------------------------------------------------|:------|:--------------|:----------|:------------------------------|
-|name                               | used to decide the name of the resource on the filesystem                                 |string | not default   | no        | \<directory\>,\<resource\>    |
-|url                                | url where to retrieve the resource                                                        |string | not default   | no        | \<resource\>                  |
-|install                            | indicate that the resource must be installed                                              |bool   | false         | yes       | \<resource\>                  |
-|manually_install                   | indicate that the resource must be placed under the directory toManuallyInstall           |bool   | false         | yes       | \<resource\>                  |
-|add_to_enviroment_path_variable    | indicate that the path to resource must be placed in the Path enviroment variable         |bool   | false         | yes       | \<resource\>                  |
-|internal_dirs                      | internal directories of path to resource must be place in the Path enviroment variable    |string | ""            | yes       | \<resource\>                  |
+Description of attributes:
+| Name                              | Description and use                                                                       |
+|:----------------------------------|:------------------------------------------------------------------------------------------|
+|name                               | used to decide the name of the resource on the filesystem                                 |
+|url                                | url where to retrieve the resource                                                        |
+|install                            | indicate that the resource must be installed                                              |
+|manually_install                   | indicate that the resource must be placed under the directory toManuallyInstall           |
+|add_to_enviroment_path_variable    | indicate that the path to resource must be placed in the Path enviroment variable         |
+|internal_dirs                      | internal directories of path to resource must be place in the Path enviroment variable    |
 
-Rules:
-when we are writing the resources.xml we must consider
-- 
+Properties of attributes:
+| Name                              | Type  | Default Value | Optional  | Appliable                     |
+|:----------------------------------|:------|:--------------|:----------|:------------------------------|
+|name                               |string | not default   | no        | \<directory\>,\<resource\>    |
+|url                                |string | not default   | no        | \<resource\>                  |
+|install                            |bool   | false         | yes       | \<resource\>                  |
+|manually_install                   |bool   | false         | yes       | \<resource\>                  |
+|add_to_enviroment_path_variable    |bool   | false         | yes       | \<resource\>                  |
+|internal_dirs                      |string | ""            | yes       | \<resource\>                  |
+
+RULES:
+when we are writing the resources.xml we must consider certain constraints
+- manually_install == True & install == True
+- internal_dirs must be a set of string divided by a semicolun, for example: "internal_dir1;internal_dir2"
 
 ## Example
 
