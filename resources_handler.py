@@ -54,18 +54,17 @@ class RESOURCES_HANDLER:
 
         path_to_file = None
 
-        # Archive case (START)
         # Search for extension if it is not already setted from
         # the userim
         if extension == "":
             extension = RESOURCES_HANDLER.__retrieve_file_extension(url, response)
-        
-        # DEBUG
-        # TODO only an info now?
-        if extension == "":
-            # print("file_name is None")
-            pass
 
+        # Check if the resource downloaded is valid
+        # in other case launch exception
+        if RESOURCES_HANDLER.__is_valid_resource(url, name, dir, env_var, install, manually_install, extension, internal_dirs) == False:
+            raise ResourceException("The attribute of this resource is not valid")
+
+        # Archive case (START)        
         # For now consider only the .zip file extension
         # TODO
         # For now consider only the portable application
@@ -122,8 +121,7 @@ class RESOURCES_HANDLER:
                 ENV_VAR_HANDLER.update_enviroment_variable("PATH", internal_dir + ";")
 
     @staticmethod
-    # TODO
-    def is_valid_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str, internal_dirs: list[str]):
+    def __is_valid_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str, internal_dirs: list[str]):
 
         # ERROR if (no)extension + install(we can't install without being sure about the extension)
         if extension == "" and install == True:
@@ -137,7 +135,6 @@ class RESOURCES_HANDLER:
 
     # This methods retrieve extension of the file that is 
     # the resource that we are trying to download.
-    # TODO use magic to resolve this problem
     # TODO optimize we can simply save before the file
     # and next move the file in the correct
     # location 
@@ -184,10 +181,7 @@ class RESOURCES_HANDLER:
         # We use the name of the downloaed file to check if it is a zip or a Rar etc
         content_disposition = response.headers.get('Content-Disposition')
 
-        # DEBUG
-        # TODO add exception
         if content_disposition == None:
-            # print("There isn't Content-Disposition in response's headers")
             return None
 
         contents = content_disposition.split()
@@ -203,4 +197,16 @@ class RESOURCES_HANDLER:
                 break
 
         return file_name
+#===================================================================================================================
+
+
+
+#===================================================================================================================
+#-------------------------------------------------------------------------------------------------------------------
+# ResourceException class
+# Custom exception for the resources
+#-------------------------------------------------------------------------------------------------------------------
+class ResourceException(RuntimeError):
+    def __init__(self, message):
+        self.message = message
 #===================================================================================================================
