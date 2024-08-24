@@ -21,7 +21,7 @@ There are so many things that can be automated.....so why not?
     ```
 
 ## How personalize your setup
-The way windows is setupped is expressed via resources.xml.
+The way windows is setupped is expressed via resources.xml file.
 A resource is a simple file that we want to handle in a certain manner. To indicate how we want to handle this resource we use the attribute.
 
 Let's show an example:
@@ -48,7 +48,9 @@ Let's show an example:
         </directory>
     </directory>
 
-    <!-- A great part can be "easily" solved with chocolatey -->
+    <!-- You can use chocolatey to soddisfy some depencies -->
     <chocolatey-dependencies path="packages.config"/>
 </data>
 ```
+
+For a complete guide about tags and attribute to use to build your perfect setup for Windows, see [doc.md](./doc.md)  
