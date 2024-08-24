@@ -17,7 +17,7 @@ from resources_handler import RESOURCES_HANDLER
 
 
 
-# TEMP
+
 def parse_xml(name: str) -> None:
 
     class BackupPath:

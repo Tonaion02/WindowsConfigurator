@@ -100,6 +100,16 @@ class RESOURCES_HANDLER:
             PATH_path_to_file = Path(path_to_file)
             PATH_path_to_file.write_bytes(response.content)
 
+        # if the resource is not an installer or an archive
+        # save directly the resource to filesystem
+        if install == False and manually_install == False:
+            # TODO consider other archives
+            if extension not in ['zip']:
+                path_to_file = os.path.join(dir, name)
+                PATH_path_to_file = Path(path_to_file)
+                PATH_path_to_file.write_bytes(response.content)
+
+
         if env_var == True:
             # Update the PATH enviroment variable with the new path 
             # to this portable file if it is needed
@@ -168,7 +178,6 @@ class RESOURCES_HANDLER:
     # This methods try to retrieve the file's name from 
     # the header 'Content-Disposition' of the 
     # HTTPS response
-    # NOTE: not in
     @staticmethod
     def __retrieve_file_name_from_response(response) -> str | None:
         # Content-Disposition is an header of a response

@@ -24,10 +24,10 @@
 
     <resource name="firefox-installer" manually="true" extension="exe" url="https://download.mozilla.org/?product=firefox-stub&amp;os=win&amp;lang=it"/>
 
-    <garbage>
+    <directory name="garbage">
         <!-- To download, rename and put in the correct directory simply files -->
         <resource name="carImage" url="https://unsplash.com/photos/Uk9OaQSbXEM/download?force=true" extension="png"/>
-    </garbage>
+    </directory>
 
     <!-- A great part can be "easily" solved with chocolatey -->
     <chocolatey-dependencies path="packages.config"/>
