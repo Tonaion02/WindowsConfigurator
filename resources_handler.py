@@ -54,18 +54,17 @@ class RESOURCES_HANDLER:
 
         path_to_file = None
 
-        # Archive case (START)
         # Search for extension if it is not already setted from
         # the userim
         if extension == "":
             extension = RESOURCES_HANDLER.__retrieve_file_extension(url, response)
-        
-        # DEBUG
-        # TODO only an info now?
-        if extension == "":
-            # print("file_name is None")
-            pass
 
+        # Check if the resource downloaded is valid
+        # in other case launch exception
+        if RESOURCES_HANDLER.__is_valid_resource(url, name, dir, env_var, install, manually_install, extension, internal_dirs) == False:
+            raise ResourceException("The attribute of this resource is not valid")
+
+        # Archive case (START)        
         # For now consider only the .zip file extension
         # TODO
         # For now consider only the portable application
@@ -100,6 +99,15 @@ class RESOURCES_HANDLER:
             PATH_path_to_file = Path(path_to_file)
             PATH_path_to_file.write_bytes(response.content)
 
+        # if the resource is not an installer or an archive
+        # save directly the resource to filesystem
+        if install == False and manually_install == False:
+            # TODO consider other archives
+            if extension not in ['zip']:
+                path_to_file = os.path.join(dir, name)
+                PATH_path_to_file = Path(path_to_file)
+                PATH_path_to_file.write_bytes(response.content)
+
         if env_var == True:
             # Update the PATH enviroment variable with the new path 
             # to this portable file if it is needed
@@ -113,8 +121,7 @@ class RESOURCES_HANDLER:
                 ENV_VAR_HANDLER.update_enviroment_variable("PATH", internal_dir + ";")
 
     @staticmethod
-    # TODO
-    def is_valid_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str, internal_dirs: list[str]):
+    def __is_valid_resource(url: str, name: str, dir: str, env_var: bool, install: bool, manually_install: bool, extension: str, internal_dirs: list[str]):
 
         # ERROR if (no)extension + install(we can't install without being sure about the extension)
         if extension == "" and install == True:
@@ -128,7 +135,6 @@ class RESOURCES_HANDLER:
 
     # This methods retrieve extension of the file that is 
     # the resource that we are trying to download.
-    # TODO use magic to resolve this problem
     # TODO optimize we can simply save before the file
     # and next move the file in the correct
     # location 
@@ -168,7 +174,6 @@ class RESOURCES_HANDLER:
     # This methods try to retrieve the file's name from 
     # the header 'Content-Disposition' of the 
     # HTTPS response
-    # NOTE: not in
     @staticmethod
     def __retrieve_file_name_from_response(response) -> str | None:
         # Content-Disposition is an header of a response
@@ -176,10 +181,7 @@ class RESOURCES_HANDLER:
         # We use the name of the downloaed file to check if it is a zip or a Rar etc
         content_disposition = response.headers.get('Content-Disposition')
 
-        # DEBUG
-        # TODO add exception
         if content_disposition == None:
-            # print("There isn't Content-Disposition in response's headers")
             return None
 
         contents = content_disposition.split()
@@ -195,113 +197,16 @@ class RESOURCES_HANDLER:
                 break
 
         return file_name
+#===================================================================================================================
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # TEMP
-    @staticmethod
-    def install_software_test(url: str, outfile, installation_directory=None):
-        R = requests.get(url, allow_redirects=True)
-        if R.status_code != 200:
-            raise ConnectionError('could not download {}\nerror code: {}'.format(url, R.status_code))
-
-        outfile = os.path.join(DIRECTORIES_HANDLER.DOWNLOADS_DIR, outfile)
-        pathOutFile = Path(outfile)
-        pathOutFile.write_bytes(R.content)
-
-        if installation_directory == None:
-            # print("Da fare!!!")
-            pass
-        else:
-            # subprocess.Popen(outfile + "/S /InstallDirectoryPath=\"C:/test/firefox\"", shell=True)
-            res = os.system("choco.exe ")
-            # print(res)
-
-
-
-
-    # Simply routine to download a file at url=url, renamed with name=name and 
-    # saved in a the directory=dir
-    # TODO check if the file already exist, in the case launch exception
-    @staticmethod
-    def download_file(url: str, name: str, dir: str) -> None:
-        response = requests.get(url, allow_redirects=True)
-        if response.status_code != 200:
-            raise ConnectionError('could not download {}\nerror code: {}'.format(url, response.status_code))
-
-        # Trying to understand if we can understand the extension of the file automatically
-        # TODO
-        name_downloaded_file = RESOURCES_HANDLER.retrieve_file_name_from_response(response)
-        if name_downloaded_file != None:
-            name_downloaded_file = name_downloaded_file.replace("\"", "")
-            name = name_downloaded_file
-
-        path_to_file = os.path.join(dir, name)
-        path_to_file_PATH = Path(path_to_file)
-        path_to_file_PATH.write_bytes(response.content)
-
-    # Routine to download and install(if it is needed) a software
-    # In the case of a portable file, it try to automatically understand if it 
-    # is needed to unzip/unrar the file. In some case is already necessary to
-    # specify. We can specify if it is portable with portable parameter.
-    # With update_env_path_var parameter we specify if we must add the path
-    # to the file or .exe to the enviroment variable
-    @staticmethod
-    def install_software(url: str, name: str, dir: str, portable: bool, update_env_path_var: bool):
-
-        response = requests.get(url, allow_redirects=True)
-        if response.status_code != 200:
-            raise ConnectionError('could not download {}\nerror code: {}'.format(url, response.status_code))
-
-        path_to_file = os.path.join(dir, name)
-
-        if portable:    
-            file_name = RESOURCES_HANDLER.retrieve_file_name_from_response(response)
-
-            # DEBUG
-            # TODO improve this error and launch an Exception
-            if file_name == None:
-                pass
-                # print("Error file_name is None")
-
-            temp_path_to_archive = os.path.join(DIRECTORIES_HANDLER.DOWNLOADS_DIR, file_name)
-            temp_path_to_archive = Path(temp_path_to_archive)
-            temp_path_to_archive.write_bytes(response.content)
-
-            # For now consider only the .zip file extension
-            # TODO
-            found = file_name.find(".zip")
-            if found != -1:
-                with zipfile.ZipFile(temp_path_to_archive, 'r') as zip_ref:
-                    zip_ref.extractall(path_to_file)
-            else:
-                pass
-                # print("Error not .zip")
-
-            # Update the PATH enviroment variable with the new path to this portable file
-            # if it is needed
-            if update_env_path_var:
-                ENV_VAR_HANDLER.update_enviroment_variable("PATH", path_to_file + ";") 
-
-
-        elif not portable:
-            # TODO
-            pass
+#===================================================================================================================
+#-------------------------------------------------------------------------------------------------------------------
+# ResourceException class
+# Custom exception for the resources
+#-------------------------------------------------------------------------------------------------------------------
+class ResourceException(RuntimeError):
+    def __init__(self, message):
+        self.message = message
 #===================================================================================================================

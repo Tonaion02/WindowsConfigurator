@@ -13,11 +13,12 @@ from console_interface import CONSOLE_INTERFACE
 from directories_handler import DIRECTORIES_HANDLER
 from enviroment_variable_handler import ENV_VAR_HANDLER
 from resources_handler import RESOURCES_HANDLER
+from resources_handler import ResourceException
 
 
 
 
-# TEMP
+
 def parse_xml(name: str) -> None:
 
     class BackupPath:
@@ -180,13 +181,17 @@ def parse_xml(name: str) -> None:
                         internal_dirs.pop()
                 # Retrieve attributes' value from the element (END)
 
-                # Skip the resource if it is not valid
-                if RESOURCES_HANDLER.is_valid_resource(url, name, dir, env_var, install, manually_install, extension, internal_dirs):
+                # # Skip the resource if it is not valid
+                # if RESOURCES_HANDLER.is_valid_resource(url, name, dir, env_var, install, manually_install, extension, internal_dirs):
+                #     RESOURCES_HANDLER.provide_resource(url, name, dir, env_var, install, manually_install, extension, internal_dirs)
+                # else:
+                #     # DEBUG
+                #     # TODO show error caused by the resource 
+                #     pass
+                try:
                     RESOURCES_HANDLER.provide_resource(url, name, dir, env_var, install, manually_install, extension, internal_dirs)
-                else:
-                    # DEBUG
-                    # TODO show error caused by the resource 
-                    pass
+                except ResourceException as res_ex:
+                    print(res_ex.message)
 
             elif popped_element.tag == TAGS.CHOCO:
                 pass
@@ -196,7 +201,6 @@ def parse_xml(name: str) -> None:
                 pass
             else :
                 # DEBUG
-                # print("WARNING! tag that i doesn't know")
                 CONSOLE_INTERFACE.print_line("WARNING! tag that i doesn't know")
         # Check if the last element is a BackupPath or an Element of the tree (END)
 
@@ -212,14 +216,16 @@ if __name__ == "__main__":
 
     DEBUG = True
 
-    DIRECTORIES_HANDLER.init("C:/source/Python/windows-configurator", DEBUG)
+    start_path = "C:/source/Python/windows-configurator"
+
+    DIRECTORIES_HANDLER.init(start_path, DEBUG)
     RESOURCES_HANDLER.init(DEBUG)
     ENV_VAR_HANDLER.init(DEBUG)
 
 
 
     # TEMP
-    os.chdir("C:/source/Python/windows-configurator")
+    os.chdir(start_path)
 
     # Cleaning
     shutil.rmtree("garbage", ignore_errors=True)
@@ -235,8 +241,5 @@ if __name__ == "__main__":
     CONSOLE_INTERFACE.print_line_at("Hello World!", [5 , 1])
 
     # TODO After all clean all the garbage(NOT IN DEBUG MODE) 
-
-    # TEMP
-    # ENV_VAR_HANDLER.update_enviroment_variable("PATH", "hello" + ";")
 
     CONSOLE_INTERFACE.close()
